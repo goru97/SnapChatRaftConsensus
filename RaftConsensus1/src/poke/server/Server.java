@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import poke.resources.ImageResource;
 import poke.server.conf.JsonUtil;
 import poke.server.conf.NodeDesc;
 import poke.server.conf.ServerConf;
@@ -323,7 +324,7 @@ public class Server {
 		StartManagement mgt = new StartManagement(conf);
 		Thread mthread = new Thread(mgt);
 		mthread.start();
-
+		
 		StartCommunication comm = new StartCommunication(conf);
 		logger.info("Server " + conf.getNodeId() + " ready");
 

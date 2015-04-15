@@ -29,8 +29,8 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//import poke.comm.App.Request;
 import poke.comm.Image.Request;
+
 import com.google.protobuf.GeneratedMessage;
 
 /**
@@ -115,9 +115,11 @@ public class CommConnection {
 
 		group = new NioEventLoopGroup();
 		try {
+			
 			handler = new CommHandler();
+			CommInitializer ci = new CommInitializer(handler,false);
 			Bootstrap b = new Bootstrap();
-			b.group(group).channel(NioSocketChannel.class).handler(handler);
+			b.group(group).channel(NioSocketChannel.class).handler(ci);
 			b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
 			b.option(ChannelOption.TCP_NODELAY, true);
 			b.option(ChannelOption.SO_KEEPALIVE, true);
@@ -178,29 +180,35 @@ public class CommConnection {
 		@Override
 		public void run() {
 			Channel ch = conn.connect();
+			
 			if (ch == null || !ch.isOpen()) {
 				CommConnection.logger.error("connection missing, no outbound communication");
 				return;
 			}
-
+			
 			while (true) {
-				if (!forever && conn.outbound.size() == 0)
+				
+				if (!forever && conn.outbound.size() == 0){
+				
 					break;
-
+				}
 				try {
 					// block until a message is enqueued
 					GeneratedMessage msg = conn.outbound.take();
 					if (ch.isWritable()) {
 						CommHandler handler = conn.connect().pipeline().get(CommHandler.class);
-
-						if (!handler.send(msg))
+						handler.setChannel(ch); //Set channel before sending messages.
+						boolean sendMsg = handler.send(msg);
+						if (!sendMsg)
 							conn.outbound.putFirst(msg);
 
 					} else
 						conn.outbound.putFirst(msg);
 				} catch (InterruptedException ie) {
+					ie.printStackTrace();
 					break;
 				} catch (Exception e) {
+					e.printStackTrace();
 					CommConnection.logger.error("Unexpected communcation failure", e);
 					break;
 				}

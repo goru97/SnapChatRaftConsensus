@@ -15,10 +15,11 @@
  */
 package poke.client;
 
+
+import io.netty.channel.Channel;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.protobuf.ByteString;
 
 import poke.client.comm.CommConnection;
 import poke.client.comm.CommListener;
@@ -27,6 +28,9 @@ import poke.comm.App.Payload;
 import poke.comm.App.Ping;
 import poke.comm.App.Request;
 import poke.comm.Image.PayLoad;
+import poke.server.managers.ConnectionManager;
+
+import com.google.protobuf.ByteString;
 
 /**
  * The command class is the concrete implementation of the functionality of our
@@ -66,11 +70,11 @@ public class ClientCommand {
 		comm.addListener(listener);
 	}
 
-	
+	private Request tempReq;
 	
 	public void sendImage(String reqId, String caption, ByteString images , int clientID) {
 		
-		
+		System.out.println("Images -->" +images);
 		
 		// payload containing data
 		poke.comm.Image.Request.Builder r = poke.comm.Image.Request.newBuilder();
@@ -98,7 +102,10 @@ public class ClientCommand {
 
 	    poke.comm.Image.Request req = r.build();	  
 
-		try {			
+		try {	
+		//Channel channel = ConnectionManager.getConnection(0, false);
+		//channel.writeAndFlush(req);
+			//poke("GB",1);
 			comm.sendMessage(req);
 		} catch (Exception e) {
 			logger.warn("Unable to deliver message, queuing");
@@ -132,7 +139,7 @@ public class ClientCommand {
 		r.setHeader(h.build());
 
 		Request req = r.build();
-
+tempReq = req;
 		try {
 			//comm.sendMessage(req);
 		} catch (Exception e) {

@@ -9,7 +9,6 @@ import java.util.UUID;
 
 import javax.imageio.ImageIO;
 
-import poke.appClients.ClientOne;
 import poke.client.comm.CommListener;
 
 import com.google.protobuf.ByteString;
@@ -39,7 +38,6 @@ public class ImageClient {
 			cc.sendImage(uniqueRequestID, "Test Image", bs , clientID);
 			
 		} catch (IOException e) {
-
 			e.printStackTrace();
 		}
 
@@ -57,7 +55,7 @@ public static void main(String[] args){
 		
 		String clientInput = "";
 
-		do {
+		//do {
 
 			System.out.println("Do you want to send an image (Y/N)?");
 			clientInput = sc.nextLine();
@@ -70,15 +68,15 @@ public static void main(String[] args){
 				
 			}
 
-		}
+	//	}
 
-		while (!"N".equalsIgnoreCase(clientInput));
+	//	while (!"N".equalsIgnoreCase(clientInput));
 				
 		
 		// we are running asynchronously
-		//System.out.println("\nExiting in few seconds");
-		//Thread.sleep(150000000);
-		//System.exit(0);
+	//	System.out.println("\nExiting in few seconds");
+	//	Thread.sleep(150000000);
+	//	System.exit(0);
 
 	} catch (Exception e) {
 		e.printStackTrace();

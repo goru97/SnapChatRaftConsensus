@@ -20,12 +20,11 @@ import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import poke.comm.App.PokeStatus;
 //import poke.comm.App.Request;
 import poke.comm.Image.Request;
-import poke.server.resources.Resource;
+import poke.resources.ImageResource;
+import poke.server.resources.ImgResource;
 import poke.server.resources.ResourceFactory;
-import poke.server.resources.ResourceUtil;
 
 import com.google.protobuf.GeneratedMessage;
 
@@ -47,6 +46,7 @@ public class InboundAppWorker extends Thread {
 
 	@Override
 	public void run() {
+		System.out.println("Inbound Worker Thread Running");
 		Channel conn = sq.getChannel();
 		if (conn == null || !conn.isOpen()) {
 			logger.error("connection missing, no inbound communication");
@@ -60,7 +60,6 @@ public class InboundAppWorker extends Thread {
 			try {
 				// block until a message is enqueued
 				GeneratedMessage msg = sq.inbound.take();
-
 				// process request and enqueue response
 				if (msg instanceof Request) {
 					Request req = ((Request) msg);
@@ -82,7 +81,7 @@ public class InboundAppWorker extends Thread {
 					 */
 
 
-					Resource rsc = ResourceFactory.getInstance().getImageResourceInstance();
+					ImgResource rsc = (ImageResource)ResourceFactory.getInstance().getImageResourceInstance();
 					if (rsc == null) {
 						logger.error("failed to obtain resource for " + req);
 
@@ -91,6 +90,7 @@ public class InboundAppWorker extends Thread {
 						// One-way communication will not produce a response
 						// (reply).
 						logger.debug("Replicating the image across cluster");
+						System.out.println("Replicating the image across cluster");
 						rsc.process(req);
 					}
 

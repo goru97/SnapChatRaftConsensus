@@ -100,7 +100,7 @@ public class ResourceFactory {
 	}
 	
 	
-	public Resource getImageResourceInstance(){
+	public ImgResource getImageResourceInstance(){
 		return new ImageResource();
 	}
 }

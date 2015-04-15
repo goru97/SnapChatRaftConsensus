@@ -15,7 +15,7 @@
  */
 package poke.client.comm;
 
-import poke.comm.App.Request;
+import poke.comm.Image.Request;
 
 public interface CommListener {
 	/**

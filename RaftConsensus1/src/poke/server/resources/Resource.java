@@ -15,9 +15,8 @@
  */
 package poke.server.resources;
 
-import io.netty.channel.ChannelConfig;
 import poke.comm.App.Request;
-import poke.server.queue.PerChannelQueue;
+
 
 
 /**
@@ -38,6 +37,5 @@ public interface Resource {
 	 */
 	Request process(Request request);
 	
-	poke.comm.Image.Request process(poke.comm.Image.Request request);
 
 }

@@ -24,7 +24,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import poke.comm.App.Request;
+import poke.comm.Image.Request;
 import poke.server.queue.ChannelQueue;
 import poke.server.queue.QueueFactory;
 
@@ -52,24 +52,29 @@ public class ServerHandler extends SimpleChannelInboundHandler<Request> {
 
 	public ServerHandler() {
 		// logger.info("** ServerHandler created **");
+		
+		System.out.println("** App ServerHandler created **");
 	}
 
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, Request req) throws Exception {
+		System.out.println("Inside Channel read 0");
+		
 		// processing is deferred to the worker threads
-		if (logger.isDebugEnabled())
-			logger.debug("---> server got a message from " + req.getHeader().getOriginator());
+		//if (logger.isDebugEnabled())
+			//logger.debug("---> server got a message from " + req.getHeader().getOriginator());
 		queueInstance(ctx.channel()).enqueueRequest(req, ctx.channel());
 	}
 
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-
+		System.out.println("Channel Inactive");
 	}
 
 	@Override
 	public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
 		logger.error("Unexpected exception from downstream.", cause);
+		System.out.println("Exception Caught");
 		ctx.close();
 	}
 

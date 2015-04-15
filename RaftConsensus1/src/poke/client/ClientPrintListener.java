@@ -15,13 +15,21 @@
  */
 package poke.client;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.imageio.ImageIO;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import poke.client.comm.CommListener;
 import poke.client.util.ClientUtil;
 import poke.comm.App.Header;
-import poke.comm.App.Request;
+import poke.comm.Image.Request;
 
 /**
  * example listener that an application would use to receive events.
@@ -33,7 +41,7 @@ public class ClientPrintListener implements CommListener {
 	protected static Logger logger = LoggerFactory.getLogger("connect");
 
 	private String id;
-
+	int i = 0;
 	public ClientPrintListener(String id) {
 		this.id = id;
 	}
@@ -45,6 +53,26 @@ public class ClientPrintListener implements CommListener {
 
 	@Override
 	public void onMessage(Request msg) {
+		i++;
+		String imgName = msg.getPayload().getReqId()+".png";
+		System.out.println("Received message from server!!");
+		
+		try{
+			byte[] byteImage = msg.getPayload().getData().toByteArray();
+			
+			
+			 InputStream in = new ByteArrayInputStream(byteImage);
+		        BufferedImage bImageFromConvert = ImageIO.read(in);
+
+		        ImageIO.write(bImageFromConvert, "png", new File(
+		                "./resources/clientReceivedImages/"+imgName));
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
+		}
+		
+		/*
 		if (logger.isDebugEnabled())
 			ClientUtil.printHeader(msg.getHeader());
 
@@ -58,6 +86,6 @@ public class ClientPrintListener implements CommListener {
 			// management responses
 		} else {
 			// unexpected reply - how do you handle this?
-		}
+		}*/
 	}
 }

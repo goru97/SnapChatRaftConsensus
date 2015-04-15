@@ -15,10 +15,13 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
 	public ServerInitializer(boolean enableCompression) {
 		compress = enableCompression;
+		System.out.println("Inside Server Initializer");
 	}
 
 	@Override
 	public void initChannel(SocketChannel ch) throws Exception {
+		System.out.println("Inside InitChannel");
+		
 		ChannelPipeline pipeline = ch.pipeline();
 
 		// Enable stream compression (you can remove these two if unnecessary)
@@ -40,7 +43,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 		// DebugFrameDecoder(67108864, 0, 4, 0, 4));
 
 		// decoder must be first
-		pipeline.addLast("protobufDecoder", new ProtobufDecoder(poke.comm.App.Request.getDefaultInstance()));
+		pipeline.addLast("protobufDecoder", new ProtobufDecoder(poke.comm.Image.Request.getDefaultInstance()));
 		pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
 		pipeline.addLast("protobufEncoder", new ProtobufEncoder());
 

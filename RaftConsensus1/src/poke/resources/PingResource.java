@@ -57,4 +57,5 @@ public class PingResource implements Resource {
 
 		return reply;
 	}
+
 }

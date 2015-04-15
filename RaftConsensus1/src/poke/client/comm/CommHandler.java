@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import poke.comm.App.Request;
+import poke.comm.Image.Request;
 
 import com.google.protobuf.GeneratedMessage;
 
@@ -36,6 +36,15 @@ public class CommHandler extends SimpleChannelInboundHandler<Request> {
 	private volatile Channel channel;
 
 	public CommHandler() {
+	}
+	
+
+	public Channel getChannel() {
+		return channel;
+	}
+
+	public void setChannel(Channel channel) {
+		this.channel = channel;
 	}
 
 	/**
@@ -47,10 +56,23 @@ public class CommHandler extends SimpleChannelInboundHandler<Request> {
 	 * @return
 	 */
 	public boolean send(GeneratedMessage msg) {
+		
+	
 		// TODO a queue is needed to prevent overloading of the socket
 		// connection. For the demonstration, we don't need it
-		ChannelFuture cf = channel.write(msg);
+		//ChannelFuture cf = channel.write(msg);
+	
+		ChannelFuture cf =null;
+		try {
+			cf = channel.writeAndFlush(msg).sync();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	System.out.println("cf -->" +cf.isDone() + cf.isSuccess());	
 		if (cf.isDone() && !cf.isSuccess()) {
+			System.out.println("failed to poke!");
 			logger.error("failed to poke!");
 			return false;
 		}

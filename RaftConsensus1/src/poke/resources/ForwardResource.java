@@ -55,6 +55,7 @@ public class ForwardResource implements Resource {
 	public void setCfg(ServerConf cfg) {
 		this.cfg = cfg;
 	}
+	
 
 	@Override
 	public Request process(Request request) {

@@ -17,9 +17,6 @@ package poke.server.resources;
 
 import java.util.List;
 
-
-
-
 import poke.comm.App.Header;
 import poke.comm.App.Header.Routing;
 import poke.comm.App.PokeStatus;
