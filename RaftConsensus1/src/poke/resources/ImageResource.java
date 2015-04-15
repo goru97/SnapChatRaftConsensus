@@ -46,6 +46,7 @@ public class ImageResource implements ImgResource{
 	public Request process(Request request){
 		
 		if(request.hasJoinMessage()){
+			System.out.println("***Adding Adjacent Node***" + request.getJoinMessage().getFromNodeId() + "Node channel--- "+getChannel().getChannel());
 		ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getChannel().getChannel(), false);	
 		}
 		
@@ -54,7 +55,7 @@ public class ImageResource implements ImgResource{
 		int currentLeaderId = -1;
 		boolean isClient= request.getHeader().getIsClient();
 		
-		
+	/*	
 		if(isClient){
 			int clientId = request.getHeader().getClientId();
 			if(!clientInfo.containsKey(clientId))
@@ -66,7 +67,7 @@ public class ImageResource implements ImgResource{
 			
 		}
 		
-
+*/
 		String currentState = CompleteRaftManager.getInstance().getCurrentState();
 		System.out.println("Current State --> "+currentState);
 		if(currentState.equalsIgnoreCase("Leader")){

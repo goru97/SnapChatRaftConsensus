@@ -36,6 +36,8 @@ import poke.core.Mgmt.Management;
 import poke.core.Mgmt.MgmtHeader;
 import poke.core.Mgmt.Network;
 import poke.core.Mgmt.Network.NetworkAction;
+import poke.server.ServerHandler;
+import poke.server.ServerInitializer;
 
 /**
  * The monitor is a client-side component that can exist as as its own client or
@@ -69,6 +71,7 @@ public class HeartMonitor {
 	private List<MonitorListener> listeners = new ArrayList<MonitorListener>();
 
 	private MonitorHandler handler;
+	private ServerHandler serverHandler;
 
 	/**
 	 * Create a heartbeat message processor.
@@ -133,8 +136,54 @@ public class HeartMonitor {
 	 * 
 	 * @return
 	 */
-	protected Channel connect() {
+	protected Channel connect(boolean isApp) {
 		// Start the connection attempt.
+		
+		if(isApp){
+
+			if (channel == null) {
+				try {
+					serverHandler = new ServerHandler();
+					ServerInitializer mi = new ServerInitializer(false);
+
+					Bootstrap b = new Bootstrap();
+					// @TODO newFixedThreadPool(2);
+					b.group(group).channel(NioSocketChannel.class).handler(mi);
+					b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+					b.option(ChannelOption.TCP_NODELAY, true);
+					b.option(ChannelOption.SO_KEEPALIVE, true);
+
+					// Make the connection attempt.
+					channel = b.connect(host, port).syncUninterruptibly();
+					channel.awaitUninterruptibly(5000l);
+					channel.channel().closeFuture().addListener(new MonitorClosedListener(this));
+
+					if (N == Integer.MAX_VALUE)
+						N = 1;
+					else
+						N++;
+
+					// add listeners waiting to be added
+					if (listeners.size() > 0) {
+						for (MonitorListener ml : listeners)
+							handler.addListener(ml);
+						listeners.clear();
+					}
+				} catch (Exception ex) {
+					if (logger.isDebugEnabled())
+						logger.debug("HeartMonitor: failed to initialize the heartbeat connection", ex);
+					// logger.error("failed to initialize the heartbeat connection",
+					// ex);
+				}
+			}
+
+			if (channel != null && channel.isDone() && channel.isSuccess())
+				return channel.channel();
+			else
+				throw new RuntimeException("Not able to establish connection to server");
+			
+		}
+		else{
 		if (channel == null) {
 			try {
 				handler = new MonitorHandler();
@@ -175,7 +224,8 @@ public class HeartMonitor {
 			return channel.channel();
 		else
 			throw new RuntimeException("Not able to establish connection to server");
-	}
+		}
+		}
 
 	public boolean isConnected() {
 		if (channel == null)
@@ -202,7 +252,7 @@ public class HeartMonitor {
 
 		boolean rtn = false;
 		try {
-			Channel ch = connect();
+			Channel ch = connect(false);
 			if (!ch.isWritable()) {
 				logger.error("Channel to node " + toNodeId + " not writable!");
 			}
@@ -242,7 +292,7 @@ public class HeartMonitor {
 	public boolean startAppHeartbeat() {
 		
 		System.out.println("****startAppHeartbeat****");
-		Channel ch = connect();
+		Channel ch = connect(true);
 		if (!ch.isWritable()) {
 			logger.error("Channel to node " + toNodeId + " not writable!");
 		}
