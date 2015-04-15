@@ -79,10 +79,8 @@ public class InboundAppWorker extends Thread {
 
 					Request reply = null;
 					 */
-					if(((Request) msg).hasJoinMessage())
-						System.out.println("This is a node join message from "+((Request)msg).getJoinMessage().getFromNodeId());
-					
-					else{
+				
+				
 					ImgResource rsc = (ImageResource)ResourceFactory.getInstance().getImageResourceInstance();
 					if (rsc == null) {
 						logger.error("failed to obtain resource for " + req);
@@ -96,7 +94,7 @@ public class InboundAppWorker extends Thread {
 						rsc.setChannel(pqChannel);
 						rsc.process(req);
 					}
-					}
+					
 					
 
 				}

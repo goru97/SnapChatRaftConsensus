@@ -44,6 +44,12 @@ public class ImageResource implements ImgResource{
 	}
 	@Override
 	public Request process(Request request){
+		
+		if(request.hasJoinMessage()){
+		ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getChannel().getChannel(), false);	
+		}
+		
+		else{
 		boolean isLeader = false;
 		int currentLeaderId = -1;
 		boolean isClient= request.getHeader().getIsClient();
@@ -148,8 +154,9 @@ public class ImageResource implements ImgResource{
 		}
 
 
-		return request;
+		}
 
+		return request;
 	}
 
 
