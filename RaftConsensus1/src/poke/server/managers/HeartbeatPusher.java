@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import poke.server.managers.HeartbeatData.BeatStatus;
+import poke.server.monitor.AppHeartMonitor;
 import poke.server.monitor.HeartMonitor;
 
 /**
@@ -66,6 +67,9 @@ public class HeartbeatPusher extends Thread {
 		// health-status from usage.
 		HeartMonitor hm = new HeartMonitor(iamNode, node.getHost(), node.getMgmtport(), node.getNodeId());
 		monitors.add(hm);
+		
+		HeartMonitor appHm = new AppHeartMonitor(iamNode, node.getHost(), node.getPort(), node.getNodeId());
+		monitors.add(appHm);
 
 		// artifact of the client-side listener - processing is done in the
 		// inbound mgmt worker
@@ -91,7 +95,17 @@ public class HeartbeatPusher extends Thread {
 						try {
 							if (logger.isDebugEnabled())
 								logger.debug("attempting to connect to node: " + hb.getNodeInfo());
+							
+							
+							if(hb.getClass().equals(HeartMonitor.class)){
+								System.out.println("*****HeartMonitor****");
+							
 							hb.startHeartbeat();
+							}
+							else if(hb.getClass().equals(AppHeartMonitor.class)){
+								System.out.println("*****AppHeartMonitor****");
+								hb.startAppHeartbeat();
+							}
 						} catch (Exception ie) {
 							// do nothing
 						}

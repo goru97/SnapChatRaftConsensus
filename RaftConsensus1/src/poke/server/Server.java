@@ -1,5 +1,5 @@
 /*
-  * copyright 2014, gash
+ * copyright 2014, gash
  * 
  * Gash licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -111,7 +111,8 @@ public class Server {
 			br.read(raw);
 			conf = JsonUtil.decode(new String(raw), ServerConf.class);
 			if (!verifyConf(conf))
-				throw new RuntimeException("verification of configuration failed");
+				throw new RuntimeException(
+						"verification of configuration failed");
 			ResourceFactory.initialize(conf);
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -181,7 +182,62 @@ public class Server {
 				b.childHandler(new ServerInitializer(compressComm));
 
 				// Start the server.
-				logger.info("Starting server " + conf.getNodeId() + ", listening on port = " + conf.getPort());
+				logger.info("Starting server " + conf.getNodeId()
+						+ ", listening on port = " + conf.getPort());
+				ChannelFuture f = b.bind(conf.getPort()).syncUninterruptibly();
+
+				// should use a future channel listener to do this step
+				// allChannels.add(f.channel());
+
+				// block until the server socket is closed.
+				f.channel().closeFuture().sync();
+			} catch (Exception ex) {
+				// on bind().sync()
+				logger.error("Failed to setup public handler.", ex);
+			} finally {
+				// Shut down all event loops to terminate all threads.
+				bossGroup.shutdownGracefully();
+				workerGroup.shutdownGracefully();
+			}
+
+			// We can also accept connections from a other ports (e.g., isolate
+			// read
+			// and writes)
+		}
+	}
+	
+	
+	private static class StartJoinCommunication implements Runnable {
+		ServerConf conf;
+
+		public StartJoinCommunication(ServerConf conf) {
+			this.conf = conf;
+		}
+
+		public void run() {
+			// construct boss and worker threads (num threads = number of cores)
+
+			EventLoopGroup bossGroup = new NioEventLoopGroup();
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+			try {
+				ServerBootstrap b = new ServerBootstrap();
+				bootstrap.put(conf.getPort(), b);
+
+				b.group(bossGroup, workerGroup);
+				b.channel(NioServerSocketChannel.class);
+				b.option(ChannelOption.SO_BACKLOG, 100);
+				b.option(ChannelOption.TCP_NODELAY, true);
+				b.option(ChannelOption.SO_KEEPALIVE, true);
+				// b.option(ChannelOption.MESSAGE_SIZE_ESTIMATOR);
+
+				boolean compressComm = false;
+				b.childHandler(new ServerInitializer(compressComm));
+				
+
+				// Start the server.
+				logger.info("Starting server " + conf.getNodeId()
+						+ ", listening on port = " + conf.getPort());
 				ChannelFuture f = b.bind(conf.getPort()).syncUninterruptibly();
 
 				// should use a future channel listener to do this step
@@ -241,8 +297,10 @@ public class Server {
 
 				// Start the server.
 
-				logger.info("Starting mgmt " + conf.getNodeId() + ", listening on port = " + conf.getMgmtPort());
-				ChannelFuture f = b.bind(conf.getMgmtPort()).syncUninterruptibly();
+				logger.info("Starting mgmt " + conf.getNodeId()
+						+ ", listening on port = " + conf.getMgmtPort());
+				ChannelFuture f = b.bind(conf.getMgmtPort())
+						.syncUninterruptibly();
 
 				// block until the server socket is closed.
 				f.channel().closeFuture().sync();
@@ -275,27 +333,32 @@ public class Server {
 
 		// create manager for leader election. The number of votes (default 1)
 		// is used to break ties where there are an even number of nodes.
-		//electionMgr = ElectionManager.initManager(conf);
-		
-		// Complete Raft Manager will take care of the state of the server (Node), 
+		// electionMgr = ElectionManager.initManager(conf);
+
+		// Complete Raft Manager will take care of the state of the server
+		// (Node),
 		// Current term of the election
-		
+
 		raftManager = CompleteRaftManager.initManager(conf);
 
 		// create manager for accepting jobs
 		jobMgr = JobManager.initManager(conf);
 
-		System.out.println("---> Server.startManagers() expecting " + conf.getAdjacent().getAdjacentNodes().size()
-				+ " connections");
+		System.out
+				.println("---> Server.startManagers() expecting "
+						+ conf.getAdjacent().getAdjacentNodes().size()
+						+ " connections");
 		// establish nearest nodes and start sending heartbeats
 		heartbeatMgr = HeartbeatManager.initManager(conf);
 		for (NodeDesc nn : conf.getAdjacent().getAdjacentNodes().values()) {
-			HeartbeatData node = new HeartbeatData(nn.getNodeId(), nn.getHost(), nn.getPort(), nn.getMgmtPort());
+			HeartbeatData node = new HeartbeatData(nn.getNodeId(),
+					nn.getHost(), nn.getPort(), nn.getMgmtPort());
 
 			// fn(from, to)
-			HeartbeatPusher.getInstance().connectToThisNode(conf.getNodeId(), node);
+			HeartbeatPusher.getInstance().connectToThisNode(conf.getNodeId(),
+					node);
 		}
-		//heartbeatMgr.start();
+		// heartbeatMgr.start();
 
 		// manage heartbeatMgr connections
 		HeartbeatPusher conn = HeartbeatPusher.getInstance();
@@ -324,13 +387,13 @@ public class Server {
 		StartManagement mgt = new StartManagement(conf);
 		Thread mthread = new Thread(mgt);
 		mthread.start();
-		
+
 		StartCommunication comm = new StartCommunication(conf);
 		logger.info("Server " + conf.getNodeId() + " ready");
 
 		Thread cthread = new Thread(comm);
 		cthread.start();
-		
+
 		raftManager.startMyRaft();
 	}
 
@@ -339,7 +402,8 @@ public class Server {
 	 */
 	public static void main(String[] args) {
 		if (args.length != 1) {
-			System.err.println("Usage: java " + Server.class.getClass().getName() + " conf-file");
+			System.err.println("Usage: java "
+					+ Server.class.getClass().getName() + " conf-file");
 			System.exit(1);
 		}
 

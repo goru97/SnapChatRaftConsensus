@@ -27,11 +27,11 @@ public final class Image {
         getMd5Bytes();
 
     /**
-     * <code>required int32 client_id = 2;</code>
+     * <code>optional int32 client_id = 2;</code>
      */
     boolean hasClientId();
     /**
-     * <code>required int32 client_id = 2;</code>
+     * <code>optional int32 client_id = 2;</code>
      */
     int getClientId();
 
@@ -45,16 +45,16 @@ public final class Image {
     int getClusterId();
 
     /**
-     * <code>required bool is_client = 4;</code>
+     * <code>optional bool is_client = 4;</code>
      */
     boolean hasIsClient();
     /**
-     * <code>required bool is_client = 4;</code>
+     * <code>optional bool is_client = 4;</code>
      */
     boolean getIsClient();
 
     /**
-     * <code>required string caption = 5;</code>
+     * <code>optional string caption = 5;</code>
      *
      * <pre>
      * image caption / title
@@ -62,7 +62,7 @@ public final class Image {
      */
     boolean hasCaption();
     /**
-     * <code>required string caption = 5;</code>
+     * <code>optional string caption = 5;</code>
      *
      * <pre>
      * image caption / title
@@ -70,7 +70,7 @@ public final class Image {
      */
     java.lang.String getCaption();
     /**
-     * <code>required string caption = 5;</code>
+     * <code>optional string caption = 5;</code>
      *
      * <pre>
      * image caption / title
@@ -257,13 +257,13 @@ public final class Image {
     public static final int CLIENT_ID_FIELD_NUMBER = 2;
     private int clientId_;
     /**
-     * <code>required int32 client_id = 2;</code>
+     * <code>optional int32 client_id = 2;</code>
      */
     public boolean hasClientId() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required int32 client_id = 2;</code>
+     * <code>optional int32 client_id = 2;</code>
      */
     public int getClientId() {
       return clientId_;
@@ -287,13 +287,13 @@ public final class Image {
     public static final int IS_CLIENT_FIELD_NUMBER = 4;
     private boolean isClient_;
     /**
-     * <code>required bool is_client = 4;</code>
+     * <code>optional bool is_client = 4;</code>
      */
     public boolean hasIsClient() {
       return ((bitField0_ & 0x00000008) == 0x00000008);
     }
     /**
-     * <code>required bool is_client = 4;</code>
+     * <code>optional bool is_client = 4;</code>
      */
     public boolean getIsClient() {
       return isClient_;
@@ -302,7 +302,7 @@ public final class Image {
     public static final int CAPTION_FIELD_NUMBER = 5;
     private java.lang.Object caption_;
     /**
-     * <code>required string caption = 5;</code>
+     * <code>optional string caption = 5;</code>
      *
      * <pre>
      * image caption / title
@@ -312,7 +312,7 @@ public final class Image {
       return ((bitField0_ & 0x00000010) == 0x00000010);
     }
     /**
-     * <code>required string caption = 5;</code>
+     * <code>optional string caption = 5;</code>
      *
      * <pre>
      * image caption / title
@@ -333,7 +333,7 @@ public final class Image {
       }
     }
     /**
-     * <code>required string caption = 5;</code>
+     * <code>optional string caption = 5;</code>
      *
      * <pre>
      * image caption / title
@@ -382,18 +382,6 @@ public final class Image {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasClientId()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasIsClient()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasCaption()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -676,18 +664,6 @@ public final class Image {
       }
 
       public final boolean isInitialized() {
-        if (!hasClientId()) {
-          
-          return false;
-        }
-        if (!hasIsClient()) {
-          
-          return false;
-        }
-        if (!hasCaption()) {
-          
-          return false;
-        }
         return true;
       }
 
@@ -788,19 +764,19 @@ public final class Image {
 
       private int clientId_ ;
       /**
-       * <code>required int32 client_id = 2;</code>
+       * <code>optional int32 client_id = 2;</code>
        */
       public boolean hasClientId() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required int32 client_id = 2;</code>
+       * <code>optional int32 client_id = 2;</code>
        */
       public int getClientId() {
         return clientId_;
       }
       /**
-       * <code>required int32 client_id = 2;</code>
+       * <code>optional int32 client_id = 2;</code>
        */
       public Builder setClientId(int value) {
         bitField0_ |= 0x00000002;
@@ -809,7 +785,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required int32 client_id = 2;</code>
+       * <code>optional int32 client_id = 2;</code>
        */
       public Builder clearClientId() {
         bitField0_ = (bitField0_ & ~0x00000002);
@@ -852,19 +828,19 @@ public final class Image {
 
       private boolean isClient_ ;
       /**
-       * <code>required bool is_client = 4;</code>
+       * <code>optional bool is_client = 4;</code>
        */
       public boolean hasIsClient() {
         return ((bitField0_ & 0x00000008) == 0x00000008);
       }
       /**
-       * <code>required bool is_client = 4;</code>
+       * <code>optional bool is_client = 4;</code>
        */
       public boolean getIsClient() {
         return isClient_;
       }
       /**
-       * <code>required bool is_client = 4;</code>
+       * <code>optional bool is_client = 4;</code>
        */
       public Builder setIsClient(boolean value) {
         bitField0_ |= 0x00000008;
@@ -873,7 +849,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required bool is_client = 4;</code>
+       * <code>optional bool is_client = 4;</code>
        */
       public Builder clearIsClient() {
         bitField0_ = (bitField0_ & ~0x00000008);
@@ -884,7 +860,7 @@ public final class Image {
 
       private java.lang.Object caption_ = "";
       /**
-       * <code>required string caption = 5;</code>
+       * <code>optional string caption = 5;</code>
        *
        * <pre>
        * image caption / title
@@ -894,7 +870,7 @@ public final class Image {
         return ((bitField0_ & 0x00000010) == 0x00000010);
       }
       /**
-       * <code>required string caption = 5;</code>
+       * <code>optional string caption = 5;</code>
        *
        * <pre>
        * image caption / title
@@ -915,7 +891,7 @@ public final class Image {
         }
       }
       /**
-       * <code>required string caption = 5;</code>
+       * <code>optional string caption = 5;</code>
        *
        * <pre>
        * image caption / title
@@ -935,7 +911,7 @@ public final class Image {
         }
       }
       /**
-       * <code>required string caption = 5;</code>
+       * <code>optional string caption = 5;</code>
        *
        * <pre>
        * image caption / title
@@ -952,7 +928,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required string caption = 5;</code>
+       * <code>optional string caption = 5;</code>
        *
        * <pre>
        * image caption / title
@@ -965,7 +941,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required string caption = 5;</code>
+       * <code>optional string caption = 5;</code>
        *
        * <pre>
        * image caption / title
@@ -1030,7 +1006,7 @@ public final class Image {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required bytes data = 1;</code>
+     * <code>optional bytes data = 1;</code>
      *
      * <pre>
      * Image format should be PNG
@@ -1038,7 +1014,7 @@ public final class Image {
      */
     boolean hasData();
     /**
-     * <code>required bytes data = 1;</code>
+     * <code>optional bytes data = 1;</code>
      *
      * <pre>
      * Image format should be PNG
@@ -1178,7 +1154,7 @@ public final class Image {
     public static final int DATA_FIELD_NUMBER = 1;
     private com.google.protobuf.ByteString data_;
     /**
-     * <code>required bytes data = 1;</code>
+     * <code>optional bytes data = 1;</code>
      *
      * <pre>
      * Image format should be PNG
@@ -1188,7 +1164,7 @@ public final class Image {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required bytes data = 1;</code>
+     * <code>optional bytes data = 1;</code>
      *
      * <pre>
      * Image format should be PNG
@@ -1262,10 +1238,6 @@ public final class Image {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasData()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -1482,10 +1454,6 @@ public final class Image {
       }
 
       public final boolean isInitialized() {
-        if (!hasData()) {
-          
-          return false;
-        }
         return true;
       }
 
@@ -1510,7 +1478,7 @@ public final class Image {
 
       private com.google.protobuf.ByteString data_ = com.google.protobuf.ByteString.EMPTY;
       /**
-       * <code>required bytes data = 1;</code>
+       * <code>optional bytes data = 1;</code>
        *
        * <pre>
        * Image format should be PNG
@@ -1520,7 +1488,7 @@ public final class Image {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required bytes data = 1;</code>
+       * <code>optional bytes data = 1;</code>
        *
        * <pre>
        * Image format should be PNG
@@ -1530,7 +1498,7 @@ public final class Image {
         return data_;
       }
       /**
-       * <code>required bytes data = 1;</code>
+       * <code>optional bytes data = 1;</code>
        *
        * <pre>
        * Image format should be PNG
@@ -1546,7 +1514,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required bytes data = 1;</code>
+       * <code>optional bytes data = 1;</code>
        *
        * <pre>
        * Image format should be PNG
@@ -1675,11 +1643,11 @@ public final class Image {
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required bool is_ping = 1;</code>
+     * <code>optional bool is_ping = 1;</code>
      */
     boolean hasIsPing();
     /**
-     * <code>required bool is_ping = 1;</code>
+     * <code>optional bool is_ping = 1;</code>
      */
     boolean getIsPing();
   }
@@ -1783,13 +1751,13 @@ public final class Image {
     public static final int IS_PING_FIELD_NUMBER = 1;
     private boolean isPing_;
     /**
-     * <code>required bool is_ping = 1;</code>
+     * <code>optional bool is_ping = 1;</code>
      */
     public boolean hasIsPing() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required bool is_ping = 1;</code>
+     * <code>optional bool is_ping = 1;</code>
      */
     public boolean getIsPing() {
       return isPing_;
@@ -1804,10 +1772,6 @@ public final class Image {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasIsPing()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -2006,10 +1970,6 @@ public final class Image {
       }
 
       public final boolean isInitialized() {
-        if (!hasIsPing()) {
-          
-          return false;
-        }
         return true;
       }
 
@@ -2034,19 +1994,19 @@ public final class Image {
 
       private boolean isPing_ ;
       /**
-       * <code>required bool is_ping = 1;</code>
+       * <code>optional bool is_ping = 1;</code>
        */
       public boolean hasIsPing() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required bool is_ping = 1;</code>
+       * <code>optional bool is_ping = 1;</code>
        */
       public boolean getIsPing() {
         return isPing_;
       }
       /**
-       * <code>required bool is_ping = 1;</code>
+       * <code>optional bool is_ping = 1;</code>
        */
       public Builder setIsPing(boolean value) {
         bitField0_ |= 0x00000001;
@@ -2055,7 +2015,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required bool is_ping = 1;</code>
+       * <code>optional bool is_ping = 1;</code>
        */
       public Builder clearIsPing() {
         bitField0_ = (bitField0_ & ~0x00000001);
@@ -2075,48 +2035,692 @@ public final class Image {
     // @@protoc_insertion_point(class_scope:Ping)
   }
 
+  public interface JoinMessageOrBuilder extends
+      // @@protoc_insertion_point(interface_extends:JoinMessage)
+      com.google.protobuf.MessageOrBuilder {
+
+    /**
+     * <code>optional int32 from_node_id = 1;</code>
+     */
+    boolean hasFromNodeId();
+    /**
+     * <code>optional int32 from_node_id = 1;</code>
+     */
+    int getFromNodeId();
+
+    /**
+     * <code>optional int32 to_node_id = 2;</code>
+     */
+    boolean hasToNodeId();
+    /**
+     * <code>optional int32 to_node_id = 2;</code>
+     */
+    int getToNodeId();
+
+    /**
+     * <code>optional int32 from_cluster_id = 3;</code>
+     */
+    boolean hasFromClusterId();
+    /**
+     * <code>optional int32 from_cluster_id = 3;</code>
+     */
+    int getFromClusterId();
+
+    /**
+     * <code>optional int32 to_cluster_id = 4;</code>
+     */
+    boolean hasToClusterId();
+    /**
+     * <code>optional int32 to_cluster_id = 4;</code>
+     */
+    int getToClusterId();
+  }
+  /**
+   * Protobuf type {@code JoinMessage}
+   */
+  public static final class JoinMessage extends
+      com.google.protobuf.GeneratedMessage implements
+      // @@protoc_insertion_point(message_implements:JoinMessage)
+      JoinMessageOrBuilder {
+    // Use JoinMessage.newBuilder() to construct.
+    private JoinMessage(com.google.protobuf.GeneratedMessage.Builder<?> builder) {
+      super(builder);
+      this.unknownFields = builder.getUnknownFields();
+    }
+    private JoinMessage(boolean noInit) { this.unknownFields = com.google.protobuf.UnknownFieldSet.getDefaultInstance(); }
+
+    private static final JoinMessage defaultInstance;
+    public static JoinMessage getDefaultInstance() {
+      return defaultInstance;
+    }
+
+    public JoinMessage getDefaultInstanceForType() {
+      return defaultInstance;
+    }
+
+    private final com.google.protobuf.UnknownFieldSet unknownFields;
+    @java.lang.Override
+    public final com.google.protobuf.UnknownFieldSet
+        getUnknownFields() {
+      return this.unknownFields;
+    }
+    private JoinMessage(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      initFields();
+      int mutable_bitField0_ = 0;
+      com.google.protobuf.UnknownFieldSet.Builder unknownFields =
+          com.google.protobuf.UnknownFieldSet.newBuilder();
+      try {
+        boolean done = false;
+        while (!done) {
+          int tag = input.readTag();
+          switch (tag) {
+            case 0:
+              done = true;
+              break;
+            default: {
+              if (!parseUnknownField(input, unknownFields,
+                                     extensionRegistry, tag)) {
+                done = true;
+              }
+              break;
+            }
+            case 8: {
+              bitField0_ |= 0x00000001;
+              fromNodeId_ = input.readInt32();
+              break;
+            }
+            case 16: {
+              bitField0_ |= 0x00000002;
+              toNodeId_ = input.readInt32();
+              break;
+            }
+            case 24: {
+              bitField0_ |= 0x00000004;
+              fromClusterId_ = input.readInt32();
+              break;
+            }
+            case 32: {
+              bitField0_ |= 0x00000008;
+              toClusterId_ = input.readInt32();
+              break;
+            }
+          }
+        }
+      } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+        throw e.setUnfinishedMessage(this);
+      } catch (java.io.IOException e) {
+        throw new com.google.protobuf.InvalidProtocolBufferException(
+            e.getMessage()).setUnfinishedMessage(this);
+      } finally {
+        this.unknownFields = unknownFields.build();
+        makeExtensionsImmutable();
+      }
+    }
+    public static final com.google.protobuf.Descriptors.Descriptor
+        getDescriptor() {
+      return poke.comm.Image.internal_static_JoinMessage_descriptor;
+    }
+
+    protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+        internalGetFieldAccessorTable() {
+      return poke.comm.Image.internal_static_JoinMessage_fieldAccessorTable
+          .ensureFieldAccessorsInitialized(
+              poke.comm.Image.JoinMessage.class, poke.comm.Image.JoinMessage.Builder.class);
+    }
+
+    public static com.google.protobuf.Parser<JoinMessage> PARSER =
+        new com.google.protobuf.AbstractParser<JoinMessage>() {
+      public JoinMessage parsePartialFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws com.google.protobuf.InvalidProtocolBufferException {
+        return new JoinMessage(input, extensionRegistry);
+      }
+    };
+
+    @java.lang.Override
+    public com.google.protobuf.Parser<JoinMessage> getParserForType() {
+      return PARSER;
+    }
+
+    private int bitField0_;
+    public static final int FROM_NODE_ID_FIELD_NUMBER = 1;
+    private int fromNodeId_;
+    /**
+     * <code>optional int32 from_node_id = 1;</code>
+     */
+    public boolean hasFromNodeId() {
+      return ((bitField0_ & 0x00000001) == 0x00000001);
+    }
+    /**
+     * <code>optional int32 from_node_id = 1;</code>
+     */
+    public int getFromNodeId() {
+      return fromNodeId_;
+    }
+
+    public static final int TO_NODE_ID_FIELD_NUMBER = 2;
+    private int toNodeId_;
+    /**
+     * <code>optional int32 to_node_id = 2;</code>
+     */
+    public boolean hasToNodeId() {
+      return ((bitField0_ & 0x00000002) == 0x00000002);
+    }
+    /**
+     * <code>optional int32 to_node_id = 2;</code>
+     */
+    public int getToNodeId() {
+      return toNodeId_;
+    }
+
+    public static final int FROM_CLUSTER_ID_FIELD_NUMBER = 3;
+    private int fromClusterId_;
+    /**
+     * <code>optional int32 from_cluster_id = 3;</code>
+     */
+    public boolean hasFromClusterId() {
+      return ((bitField0_ & 0x00000004) == 0x00000004);
+    }
+    /**
+     * <code>optional int32 from_cluster_id = 3;</code>
+     */
+    public int getFromClusterId() {
+      return fromClusterId_;
+    }
+
+    public static final int TO_CLUSTER_ID_FIELD_NUMBER = 4;
+    private int toClusterId_;
+    /**
+     * <code>optional int32 to_cluster_id = 4;</code>
+     */
+    public boolean hasToClusterId() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional int32 to_cluster_id = 4;</code>
+     */
+    public int getToClusterId() {
+      return toClusterId_;
+    }
+
+    private void initFields() {
+      fromNodeId_ = 0;
+      toNodeId_ = 0;
+      fromClusterId_ = 0;
+      toClusterId_ = 0;
+    }
+    private byte memoizedIsInitialized = -1;
+    public final boolean isInitialized() {
+      byte isInitialized = memoizedIsInitialized;
+      if (isInitialized == 1) return true;
+      if (isInitialized == 0) return false;
+
+      memoizedIsInitialized = 1;
+      return true;
+    }
+
+    public void writeTo(com.google.protobuf.CodedOutputStream output)
+                        throws java.io.IOException {
+      getSerializedSize();
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        output.writeInt32(1, fromNodeId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        output.writeInt32(2, toNodeId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        output.writeInt32(3, fromClusterId_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeInt32(4, toClusterId_);
+      }
+      getUnknownFields().writeTo(output);
+    }
+
+    private int memoizedSerializedSize = -1;
+    public int getSerializedSize() {
+      int size = memoizedSerializedSize;
+      if (size != -1) return size;
+
+      size = 0;
+      if (((bitField0_ & 0x00000001) == 0x00000001)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(1, fromNodeId_);
+      }
+      if (((bitField0_ & 0x00000002) == 0x00000002)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(2, toNodeId_);
+      }
+      if (((bitField0_ & 0x00000004) == 0x00000004)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(3, fromClusterId_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeInt32Size(4, toClusterId_);
+      }
+      size += getUnknownFields().getSerializedSize();
+      memoizedSerializedSize = size;
+      return size;
+    }
+
+    private static final long serialVersionUID = 0L;
+    @java.lang.Override
+    protected java.lang.Object writeReplace()
+        throws java.io.ObjectStreamException {
+      return super.writeReplace();
+    }
+
+    public static poke.comm.Image.JoinMessage parseFrom(
+        com.google.protobuf.ByteString data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static poke.comm.Image.JoinMessage parseFrom(
+        com.google.protobuf.ByteString data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static poke.comm.Image.JoinMessage parseFrom(byte[] data)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data);
+    }
+    public static poke.comm.Image.JoinMessage parseFrom(
+        byte[] data,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws com.google.protobuf.InvalidProtocolBufferException {
+      return PARSER.parseFrom(data, extensionRegistry);
+    }
+    public static poke.comm.Image.JoinMessage parseFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static poke.comm.Image.JoinMessage parseFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+    public static poke.comm.Image.JoinMessage parseDelimitedFrom(java.io.InputStream input)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input);
+    }
+    public static poke.comm.Image.JoinMessage parseDelimitedFrom(
+        java.io.InputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseDelimitedFrom(input, extensionRegistry);
+    }
+    public static poke.comm.Image.JoinMessage parseFrom(
+        com.google.protobuf.CodedInputStream input)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input);
+    }
+    public static poke.comm.Image.JoinMessage parseFrom(
+        com.google.protobuf.CodedInputStream input,
+        com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+        throws java.io.IOException {
+      return PARSER.parseFrom(input, extensionRegistry);
+    }
+
+    public static Builder newBuilder() { return Builder.create(); }
+    public Builder newBuilderForType() { return newBuilder(); }
+    public static Builder newBuilder(poke.comm.Image.JoinMessage prototype) {
+      return newBuilder().mergeFrom(prototype);
+    }
+    public Builder toBuilder() { return newBuilder(this); }
+
+    @java.lang.Override
+    protected Builder newBuilderForType(
+        com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+      Builder builder = new Builder(parent);
+      return builder;
+    }
+    /**
+     * Protobuf type {@code JoinMessage}
+     */
+    public static final class Builder extends
+        com.google.protobuf.GeneratedMessage.Builder<Builder> implements
+        // @@protoc_insertion_point(builder_implements:JoinMessage)
+        poke.comm.Image.JoinMessageOrBuilder {
+      public static final com.google.protobuf.Descriptors.Descriptor
+          getDescriptor() {
+        return poke.comm.Image.internal_static_JoinMessage_descriptor;
+      }
+
+      protected com.google.protobuf.GeneratedMessage.FieldAccessorTable
+          internalGetFieldAccessorTable() {
+        return poke.comm.Image.internal_static_JoinMessage_fieldAccessorTable
+            .ensureFieldAccessorsInitialized(
+                poke.comm.Image.JoinMessage.class, poke.comm.Image.JoinMessage.Builder.class);
+      }
+
+      // Construct using poke.comm.Image.JoinMessage.newBuilder()
+      private Builder() {
+        maybeForceBuilderInitialization();
+      }
+
+      private Builder(
+          com.google.protobuf.GeneratedMessage.BuilderParent parent) {
+        super(parent);
+        maybeForceBuilderInitialization();
+      }
+      private void maybeForceBuilderInitialization() {
+        if (com.google.protobuf.GeneratedMessage.alwaysUseFieldBuilders) {
+        }
+      }
+      private static Builder create() {
+        return new Builder();
+      }
+
+      public Builder clear() {
+        super.clear();
+        fromNodeId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000001);
+        toNodeId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000002);
+        fromClusterId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000004);
+        toClusterId_ = 0;
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+
+      public Builder clone() {
+        return create().mergeFrom(buildPartial());
+      }
+
+      public com.google.protobuf.Descriptors.Descriptor
+          getDescriptorForType() {
+        return poke.comm.Image.internal_static_JoinMessage_descriptor;
+      }
+
+      public poke.comm.Image.JoinMessage getDefaultInstanceForType() {
+        return poke.comm.Image.JoinMessage.getDefaultInstance();
+      }
+
+      public poke.comm.Image.JoinMessage build() {
+        poke.comm.Image.JoinMessage result = buildPartial();
+        if (!result.isInitialized()) {
+          throw newUninitializedMessageException(result);
+        }
+        return result;
+      }
+
+      public poke.comm.Image.JoinMessage buildPartial() {
+        poke.comm.Image.JoinMessage result = new poke.comm.Image.JoinMessage(this);
+        int from_bitField0_ = bitField0_;
+        int to_bitField0_ = 0;
+        if (((from_bitField0_ & 0x00000001) == 0x00000001)) {
+          to_bitField0_ |= 0x00000001;
+        }
+        result.fromNodeId_ = fromNodeId_;
+        if (((from_bitField0_ & 0x00000002) == 0x00000002)) {
+          to_bitField0_ |= 0x00000002;
+        }
+        result.toNodeId_ = toNodeId_;
+        if (((from_bitField0_ & 0x00000004) == 0x00000004)) {
+          to_bitField0_ |= 0x00000004;
+        }
+        result.fromClusterId_ = fromClusterId_;
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        result.toClusterId_ = toClusterId_;
+        result.bitField0_ = to_bitField0_;
+        onBuilt();
+        return result;
+      }
+
+      public Builder mergeFrom(com.google.protobuf.Message other) {
+        if (other instanceof poke.comm.Image.JoinMessage) {
+          return mergeFrom((poke.comm.Image.JoinMessage)other);
+        } else {
+          super.mergeFrom(other);
+          return this;
+        }
+      }
+
+      public Builder mergeFrom(poke.comm.Image.JoinMessage other) {
+        if (other == poke.comm.Image.JoinMessage.getDefaultInstance()) return this;
+        if (other.hasFromNodeId()) {
+          setFromNodeId(other.getFromNodeId());
+        }
+        if (other.hasToNodeId()) {
+          setToNodeId(other.getToNodeId());
+        }
+        if (other.hasFromClusterId()) {
+          setFromClusterId(other.getFromClusterId());
+        }
+        if (other.hasToClusterId()) {
+          setToClusterId(other.getToClusterId());
+        }
+        this.mergeUnknownFields(other.getUnknownFields());
+        return this;
+      }
+
+      public final boolean isInitialized() {
+        return true;
+      }
+
+      public Builder mergeFrom(
+          com.google.protobuf.CodedInputStream input,
+          com.google.protobuf.ExtensionRegistryLite extensionRegistry)
+          throws java.io.IOException {
+        poke.comm.Image.JoinMessage parsedMessage = null;
+        try {
+          parsedMessage = PARSER.parsePartialFrom(input, extensionRegistry);
+        } catch (com.google.protobuf.InvalidProtocolBufferException e) {
+          parsedMessage = (poke.comm.Image.JoinMessage) e.getUnfinishedMessage();
+          throw e;
+        } finally {
+          if (parsedMessage != null) {
+            mergeFrom(parsedMessage);
+          }
+        }
+        return this;
+      }
+      private int bitField0_;
+
+      private int fromNodeId_ ;
+      /**
+       * <code>optional int32 from_node_id = 1;</code>
+       */
+      public boolean hasFromNodeId() {
+        return ((bitField0_ & 0x00000001) == 0x00000001);
+      }
+      /**
+       * <code>optional int32 from_node_id = 1;</code>
+       */
+      public int getFromNodeId() {
+        return fromNodeId_;
+      }
+      /**
+       * <code>optional int32 from_node_id = 1;</code>
+       */
+      public Builder setFromNodeId(int value) {
+        bitField0_ |= 0x00000001;
+        fromNodeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 from_node_id = 1;</code>
+       */
+      public Builder clearFromNodeId() {
+        bitField0_ = (bitField0_ & ~0x00000001);
+        fromNodeId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int toNodeId_ ;
+      /**
+       * <code>optional int32 to_node_id = 2;</code>
+       */
+      public boolean hasToNodeId() {
+        return ((bitField0_ & 0x00000002) == 0x00000002);
+      }
+      /**
+       * <code>optional int32 to_node_id = 2;</code>
+       */
+      public int getToNodeId() {
+        return toNodeId_;
+      }
+      /**
+       * <code>optional int32 to_node_id = 2;</code>
+       */
+      public Builder setToNodeId(int value) {
+        bitField0_ |= 0x00000002;
+        toNodeId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 to_node_id = 2;</code>
+       */
+      public Builder clearToNodeId() {
+        bitField0_ = (bitField0_ & ~0x00000002);
+        toNodeId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int fromClusterId_ ;
+      /**
+       * <code>optional int32 from_cluster_id = 3;</code>
+       */
+      public boolean hasFromClusterId() {
+        return ((bitField0_ & 0x00000004) == 0x00000004);
+      }
+      /**
+       * <code>optional int32 from_cluster_id = 3;</code>
+       */
+      public int getFromClusterId() {
+        return fromClusterId_;
+      }
+      /**
+       * <code>optional int32 from_cluster_id = 3;</code>
+       */
+      public Builder setFromClusterId(int value) {
+        bitField0_ |= 0x00000004;
+        fromClusterId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 from_cluster_id = 3;</code>
+       */
+      public Builder clearFromClusterId() {
+        bitField0_ = (bitField0_ & ~0x00000004);
+        fromClusterId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      private int toClusterId_ ;
+      /**
+       * <code>optional int32 to_cluster_id = 4;</code>
+       */
+      public boolean hasToClusterId() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional int32 to_cluster_id = 4;</code>
+       */
+      public int getToClusterId() {
+        return toClusterId_;
+      }
+      /**
+       * <code>optional int32 to_cluster_id = 4;</code>
+       */
+      public Builder setToClusterId(int value) {
+        bitField0_ |= 0x00000008;
+        toClusterId_ = value;
+        onChanged();
+        return this;
+      }
+      /**
+       * <code>optional int32 to_cluster_id = 4;</code>
+       */
+      public Builder clearToClusterId() {
+        bitField0_ = (bitField0_ & ~0x00000008);
+        toClusterId_ = 0;
+        onChanged();
+        return this;
+      }
+
+      // @@protoc_insertion_point(builder_scope:JoinMessage)
+    }
+
+    static {
+      defaultInstance = new JoinMessage(true);
+      defaultInstance.initFields();
+    }
+
+    // @@protoc_insertion_point(class_scope:JoinMessage)
+  }
+
   public interface RequestOrBuilder extends
       // @@protoc_insertion_point(interface_extends:Request)
       com.google.protobuf.MessageOrBuilder {
 
     /**
-     * <code>required .Header header = 1;</code>
+     * <code>optional .Header header = 1;</code>
      */
     boolean hasHeader();
     /**
-     * <code>required .Header header = 1;</code>
+     * <code>optional .Header header = 1;</code>
      */
     poke.comm.Image.Header getHeader();
     /**
-     * <code>required .Header header = 1;</code>
+     * <code>optional .Header header = 1;</code>
      */
     poke.comm.Image.HeaderOrBuilder getHeaderOrBuilder();
 
     /**
-     * <code>required .PayLoad payload = 2;</code>
+     * <code>optional .PayLoad payload = 2;</code>
      */
     boolean hasPayload();
     /**
-     * <code>required .PayLoad payload = 2;</code>
+     * <code>optional .PayLoad payload = 2;</code>
      */
     poke.comm.Image.PayLoad getPayload();
     /**
-     * <code>required .PayLoad payload = 2;</code>
+     * <code>optional .PayLoad payload = 2;</code>
      */
     poke.comm.Image.PayLoadOrBuilder getPayloadOrBuilder();
 
     /**
-     * <code>required .Ping ping = 3;</code>
+     * <code>optional .Ping ping = 3;</code>
      */
     boolean hasPing();
     /**
-     * <code>required .Ping ping = 3;</code>
+     * <code>optional .Ping ping = 3;</code>
      */
     poke.comm.Image.Ping getPing();
     /**
-     * <code>required .Ping ping = 3;</code>
+     * <code>optional .Ping ping = 3;</code>
      */
     poke.comm.Image.PingOrBuilder getPingOrBuilder();
+
+    /**
+     * <code>optional .JoinMessage joinMessage = 4;</code>
+     */
+    boolean hasJoinMessage();
+    /**
+     * <code>optional .JoinMessage joinMessage = 4;</code>
+     */
+    poke.comm.Image.JoinMessage getJoinMessage();
+    /**
+     * <code>optional .JoinMessage joinMessage = 4;</code>
+     */
+    poke.comm.Image.JoinMessageOrBuilder getJoinMessageOrBuilder();
   }
   /**
    * Protobuf type {@code Request}
@@ -2209,6 +2813,19 @@ public final class Image {
               bitField0_ |= 0x00000004;
               break;
             }
+            case 34: {
+              poke.comm.Image.JoinMessage.Builder subBuilder = null;
+              if (((bitField0_ & 0x00000008) == 0x00000008)) {
+                subBuilder = joinMessage_.toBuilder();
+              }
+              joinMessage_ = input.readMessage(poke.comm.Image.JoinMessage.PARSER, extensionRegistry);
+              if (subBuilder != null) {
+                subBuilder.mergeFrom(joinMessage_);
+                joinMessage_ = subBuilder.buildPartial();
+              }
+              bitField0_ |= 0x00000008;
+              break;
+            }
           }
         }
       } catch (com.google.protobuf.InvalidProtocolBufferException e) {
@@ -2252,19 +2869,19 @@ public final class Image {
     public static final int HEADER_FIELD_NUMBER = 1;
     private poke.comm.Image.Header header_;
     /**
-     * <code>required .Header header = 1;</code>
+     * <code>optional .Header header = 1;</code>
      */
     public boolean hasHeader() {
       return ((bitField0_ & 0x00000001) == 0x00000001);
     }
     /**
-     * <code>required .Header header = 1;</code>
+     * <code>optional .Header header = 1;</code>
      */
     public poke.comm.Image.Header getHeader() {
       return header_;
     }
     /**
-     * <code>required .Header header = 1;</code>
+     * <code>optional .Header header = 1;</code>
      */
     public poke.comm.Image.HeaderOrBuilder getHeaderOrBuilder() {
       return header_;
@@ -2273,19 +2890,19 @@ public final class Image {
     public static final int PAYLOAD_FIELD_NUMBER = 2;
     private poke.comm.Image.PayLoad payload_;
     /**
-     * <code>required .PayLoad payload = 2;</code>
+     * <code>optional .PayLoad payload = 2;</code>
      */
     public boolean hasPayload() {
       return ((bitField0_ & 0x00000002) == 0x00000002);
     }
     /**
-     * <code>required .PayLoad payload = 2;</code>
+     * <code>optional .PayLoad payload = 2;</code>
      */
     public poke.comm.Image.PayLoad getPayload() {
       return payload_;
     }
     /**
-     * <code>required .PayLoad payload = 2;</code>
+     * <code>optional .PayLoad payload = 2;</code>
      */
     public poke.comm.Image.PayLoadOrBuilder getPayloadOrBuilder() {
       return payload_;
@@ -2294,28 +2911,50 @@ public final class Image {
     public static final int PING_FIELD_NUMBER = 3;
     private poke.comm.Image.Ping ping_;
     /**
-     * <code>required .Ping ping = 3;</code>
+     * <code>optional .Ping ping = 3;</code>
      */
     public boolean hasPing() {
       return ((bitField0_ & 0x00000004) == 0x00000004);
     }
     /**
-     * <code>required .Ping ping = 3;</code>
+     * <code>optional .Ping ping = 3;</code>
      */
     public poke.comm.Image.Ping getPing() {
       return ping_;
     }
     /**
-     * <code>required .Ping ping = 3;</code>
+     * <code>optional .Ping ping = 3;</code>
      */
     public poke.comm.Image.PingOrBuilder getPingOrBuilder() {
       return ping_;
+    }
+
+    public static final int JOINMESSAGE_FIELD_NUMBER = 4;
+    private poke.comm.Image.JoinMessage joinMessage_;
+    /**
+     * <code>optional .JoinMessage joinMessage = 4;</code>
+     */
+    public boolean hasJoinMessage() {
+      return ((bitField0_ & 0x00000008) == 0x00000008);
+    }
+    /**
+     * <code>optional .JoinMessage joinMessage = 4;</code>
+     */
+    public poke.comm.Image.JoinMessage getJoinMessage() {
+      return joinMessage_;
+    }
+    /**
+     * <code>optional .JoinMessage joinMessage = 4;</code>
+     */
+    public poke.comm.Image.JoinMessageOrBuilder getJoinMessageOrBuilder() {
+      return joinMessage_;
     }
 
     private void initFields() {
       header_ = poke.comm.Image.Header.getDefaultInstance();
       payload_ = poke.comm.Image.PayLoad.getDefaultInstance();
       ping_ = poke.comm.Image.Ping.getDefaultInstance();
+      joinMessage_ = poke.comm.Image.JoinMessage.getDefaultInstance();
     }
     private byte memoizedIsInitialized = -1;
     public final boolean isInitialized() {
@@ -2323,30 +2962,6 @@ public final class Image {
       if (isInitialized == 1) return true;
       if (isInitialized == 0) return false;
 
-      if (!hasHeader()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPayload()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!hasPing()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!getHeader().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!getPayload().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
-      if (!getPing().isInitialized()) {
-        memoizedIsInitialized = 0;
-        return false;
-      }
       memoizedIsInitialized = 1;
       return true;
     }
@@ -2362,6 +2977,9 @@ public final class Image {
       }
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         output.writeMessage(3, ping_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        output.writeMessage(4, joinMessage_);
       }
       getUnknownFields().writeTo(output);
     }
@@ -2383,6 +3001,10 @@ public final class Image {
       if (((bitField0_ & 0x00000004) == 0x00000004)) {
         size += com.google.protobuf.CodedOutputStream
           .computeMessageSize(3, ping_);
+      }
+      if (((bitField0_ & 0x00000008) == 0x00000008)) {
+        size += com.google.protobuf.CodedOutputStream
+          .computeMessageSize(4, joinMessage_);
       }
       size += getUnknownFields().getSerializedSize();
       memoizedSerializedSize = size;
@@ -2496,6 +3118,7 @@ public final class Image {
           getHeaderFieldBuilder();
           getPayloadFieldBuilder();
           getPingFieldBuilder();
+          getJoinMessageFieldBuilder();
         }
       }
       private static Builder create() {
@@ -2522,6 +3145,12 @@ public final class Image {
           pingBuilder_.clear();
         }
         bitField0_ = (bitField0_ & ~0x00000004);
+        if (joinMessageBuilder_ == null) {
+          joinMessage_ = poke.comm.Image.JoinMessage.getDefaultInstance();
+        } else {
+          joinMessageBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
         return this;
       }
 
@@ -2574,6 +3203,14 @@ public final class Image {
         } else {
           result.ping_ = pingBuilder_.build();
         }
+        if (((from_bitField0_ & 0x00000008) == 0x00000008)) {
+          to_bitField0_ |= 0x00000008;
+        }
+        if (joinMessageBuilder_ == null) {
+          result.joinMessage_ = joinMessage_;
+        } else {
+          result.joinMessage_ = joinMessageBuilder_.build();
+        }
         result.bitField0_ = to_bitField0_;
         onBuilt();
         return result;
@@ -2599,35 +3236,14 @@ public final class Image {
         if (other.hasPing()) {
           mergePing(other.getPing());
         }
+        if (other.hasJoinMessage()) {
+          mergeJoinMessage(other.getJoinMessage());
+        }
         this.mergeUnknownFields(other.getUnknownFields());
         return this;
       }
 
       public final boolean isInitialized() {
-        if (!hasHeader()) {
-          
-          return false;
-        }
-        if (!hasPayload()) {
-          
-          return false;
-        }
-        if (!hasPing()) {
-          
-          return false;
-        }
-        if (!getHeader().isInitialized()) {
-          
-          return false;
-        }
-        if (!getPayload().isInitialized()) {
-          
-          return false;
-        }
-        if (!getPing().isInitialized()) {
-          
-          return false;
-        }
         return true;
       }
 
@@ -2654,13 +3270,13 @@ public final class Image {
       private com.google.protobuf.SingleFieldBuilder<
           poke.comm.Image.Header, poke.comm.Image.Header.Builder, poke.comm.Image.HeaderOrBuilder> headerBuilder_;
       /**
-       * <code>required .Header header = 1;</code>
+       * <code>optional .Header header = 1;</code>
        */
       public boolean hasHeader() {
         return ((bitField0_ & 0x00000001) == 0x00000001);
       }
       /**
-       * <code>required .Header header = 1;</code>
+       * <code>optional .Header header = 1;</code>
        */
       public poke.comm.Image.Header getHeader() {
         if (headerBuilder_ == null) {
@@ -2670,7 +3286,7 @@ public final class Image {
         }
       }
       /**
-       * <code>required .Header header = 1;</code>
+       * <code>optional .Header header = 1;</code>
        */
       public Builder setHeader(poke.comm.Image.Header value) {
         if (headerBuilder_ == null) {
@@ -2686,7 +3302,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .Header header = 1;</code>
+       * <code>optional .Header header = 1;</code>
        */
       public Builder setHeader(
           poke.comm.Image.Header.Builder builderForValue) {
@@ -2700,7 +3316,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .Header header = 1;</code>
+       * <code>optional .Header header = 1;</code>
        */
       public Builder mergeHeader(poke.comm.Image.Header value) {
         if (headerBuilder_ == null) {
@@ -2719,7 +3335,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .Header header = 1;</code>
+       * <code>optional .Header header = 1;</code>
        */
       public Builder clearHeader() {
         if (headerBuilder_ == null) {
@@ -2732,7 +3348,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .Header header = 1;</code>
+       * <code>optional .Header header = 1;</code>
        */
       public poke.comm.Image.Header.Builder getHeaderBuilder() {
         bitField0_ |= 0x00000001;
@@ -2740,7 +3356,7 @@ public final class Image {
         return getHeaderFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Header header = 1;</code>
+       * <code>optional .Header header = 1;</code>
        */
       public poke.comm.Image.HeaderOrBuilder getHeaderOrBuilder() {
         if (headerBuilder_ != null) {
@@ -2750,7 +3366,7 @@ public final class Image {
         }
       }
       /**
-       * <code>required .Header header = 1;</code>
+       * <code>optional .Header header = 1;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           poke.comm.Image.Header, poke.comm.Image.Header.Builder, poke.comm.Image.HeaderOrBuilder> 
@@ -2770,13 +3386,13 @@ public final class Image {
       private com.google.protobuf.SingleFieldBuilder<
           poke.comm.Image.PayLoad, poke.comm.Image.PayLoad.Builder, poke.comm.Image.PayLoadOrBuilder> payloadBuilder_;
       /**
-       * <code>required .PayLoad payload = 2;</code>
+       * <code>optional .PayLoad payload = 2;</code>
        */
       public boolean hasPayload() {
         return ((bitField0_ & 0x00000002) == 0x00000002);
       }
       /**
-       * <code>required .PayLoad payload = 2;</code>
+       * <code>optional .PayLoad payload = 2;</code>
        */
       public poke.comm.Image.PayLoad getPayload() {
         if (payloadBuilder_ == null) {
@@ -2786,7 +3402,7 @@ public final class Image {
         }
       }
       /**
-       * <code>required .PayLoad payload = 2;</code>
+       * <code>optional .PayLoad payload = 2;</code>
        */
       public Builder setPayload(poke.comm.Image.PayLoad value) {
         if (payloadBuilder_ == null) {
@@ -2802,7 +3418,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .PayLoad payload = 2;</code>
+       * <code>optional .PayLoad payload = 2;</code>
        */
       public Builder setPayload(
           poke.comm.Image.PayLoad.Builder builderForValue) {
@@ -2816,7 +3432,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .PayLoad payload = 2;</code>
+       * <code>optional .PayLoad payload = 2;</code>
        */
       public Builder mergePayload(poke.comm.Image.PayLoad value) {
         if (payloadBuilder_ == null) {
@@ -2835,7 +3451,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .PayLoad payload = 2;</code>
+       * <code>optional .PayLoad payload = 2;</code>
        */
       public Builder clearPayload() {
         if (payloadBuilder_ == null) {
@@ -2848,7 +3464,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .PayLoad payload = 2;</code>
+       * <code>optional .PayLoad payload = 2;</code>
        */
       public poke.comm.Image.PayLoad.Builder getPayloadBuilder() {
         bitField0_ |= 0x00000002;
@@ -2856,7 +3472,7 @@ public final class Image {
         return getPayloadFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .PayLoad payload = 2;</code>
+       * <code>optional .PayLoad payload = 2;</code>
        */
       public poke.comm.Image.PayLoadOrBuilder getPayloadOrBuilder() {
         if (payloadBuilder_ != null) {
@@ -2866,7 +3482,7 @@ public final class Image {
         }
       }
       /**
-       * <code>required .PayLoad payload = 2;</code>
+       * <code>optional .PayLoad payload = 2;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           poke.comm.Image.PayLoad, poke.comm.Image.PayLoad.Builder, poke.comm.Image.PayLoadOrBuilder> 
@@ -2886,13 +3502,13 @@ public final class Image {
       private com.google.protobuf.SingleFieldBuilder<
           poke.comm.Image.Ping, poke.comm.Image.Ping.Builder, poke.comm.Image.PingOrBuilder> pingBuilder_;
       /**
-       * <code>required .Ping ping = 3;</code>
+       * <code>optional .Ping ping = 3;</code>
        */
       public boolean hasPing() {
         return ((bitField0_ & 0x00000004) == 0x00000004);
       }
       /**
-       * <code>required .Ping ping = 3;</code>
+       * <code>optional .Ping ping = 3;</code>
        */
       public poke.comm.Image.Ping getPing() {
         if (pingBuilder_ == null) {
@@ -2902,7 +3518,7 @@ public final class Image {
         }
       }
       /**
-       * <code>required .Ping ping = 3;</code>
+       * <code>optional .Ping ping = 3;</code>
        */
       public Builder setPing(poke.comm.Image.Ping value) {
         if (pingBuilder_ == null) {
@@ -2918,7 +3534,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .Ping ping = 3;</code>
+       * <code>optional .Ping ping = 3;</code>
        */
       public Builder setPing(
           poke.comm.Image.Ping.Builder builderForValue) {
@@ -2932,7 +3548,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .Ping ping = 3;</code>
+       * <code>optional .Ping ping = 3;</code>
        */
       public Builder mergePing(poke.comm.Image.Ping value) {
         if (pingBuilder_ == null) {
@@ -2951,7 +3567,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .Ping ping = 3;</code>
+       * <code>optional .Ping ping = 3;</code>
        */
       public Builder clearPing() {
         if (pingBuilder_ == null) {
@@ -2964,7 +3580,7 @@ public final class Image {
         return this;
       }
       /**
-       * <code>required .Ping ping = 3;</code>
+       * <code>optional .Ping ping = 3;</code>
        */
       public poke.comm.Image.Ping.Builder getPingBuilder() {
         bitField0_ |= 0x00000004;
@@ -2972,7 +3588,7 @@ public final class Image {
         return getPingFieldBuilder().getBuilder();
       }
       /**
-       * <code>required .Ping ping = 3;</code>
+       * <code>optional .Ping ping = 3;</code>
        */
       public poke.comm.Image.PingOrBuilder getPingOrBuilder() {
         if (pingBuilder_ != null) {
@@ -2982,7 +3598,7 @@ public final class Image {
         }
       }
       /**
-       * <code>required .Ping ping = 3;</code>
+       * <code>optional .Ping ping = 3;</code>
        */
       private com.google.protobuf.SingleFieldBuilder<
           poke.comm.Image.Ping, poke.comm.Image.Ping.Builder, poke.comm.Image.PingOrBuilder> 
@@ -2996,6 +3612,122 @@ public final class Image {
           ping_ = null;
         }
         return pingBuilder_;
+      }
+
+      private poke.comm.Image.JoinMessage joinMessage_ = poke.comm.Image.JoinMessage.getDefaultInstance();
+      private com.google.protobuf.SingleFieldBuilder<
+          poke.comm.Image.JoinMessage, poke.comm.Image.JoinMessage.Builder, poke.comm.Image.JoinMessageOrBuilder> joinMessageBuilder_;
+      /**
+       * <code>optional .JoinMessage joinMessage = 4;</code>
+       */
+      public boolean hasJoinMessage() {
+        return ((bitField0_ & 0x00000008) == 0x00000008);
+      }
+      /**
+       * <code>optional .JoinMessage joinMessage = 4;</code>
+       */
+      public poke.comm.Image.JoinMessage getJoinMessage() {
+        if (joinMessageBuilder_ == null) {
+          return joinMessage_;
+        } else {
+          return joinMessageBuilder_.getMessage();
+        }
+      }
+      /**
+       * <code>optional .JoinMessage joinMessage = 4;</code>
+       */
+      public Builder setJoinMessage(poke.comm.Image.JoinMessage value) {
+        if (joinMessageBuilder_ == null) {
+          if (value == null) {
+            throw new NullPointerException();
+          }
+          joinMessage_ = value;
+          onChanged();
+        } else {
+          joinMessageBuilder_.setMessage(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .JoinMessage joinMessage = 4;</code>
+       */
+      public Builder setJoinMessage(
+          poke.comm.Image.JoinMessage.Builder builderForValue) {
+        if (joinMessageBuilder_ == null) {
+          joinMessage_ = builderForValue.build();
+          onChanged();
+        } else {
+          joinMessageBuilder_.setMessage(builderForValue.build());
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .JoinMessage joinMessage = 4;</code>
+       */
+      public Builder mergeJoinMessage(poke.comm.Image.JoinMessage value) {
+        if (joinMessageBuilder_ == null) {
+          if (((bitField0_ & 0x00000008) == 0x00000008) &&
+              joinMessage_ != poke.comm.Image.JoinMessage.getDefaultInstance()) {
+            joinMessage_ =
+              poke.comm.Image.JoinMessage.newBuilder(joinMessage_).mergeFrom(value).buildPartial();
+          } else {
+            joinMessage_ = value;
+          }
+          onChanged();
+        } else {
+          joinMessageBuilder_.mergeFrom(value);
+        }
+        bitField0_ |= 0x00000008;
+        return this;
+      }
+      /**
+       * <code>optional .JoinMessage joinMessage = 4;</code>
+       */
+      public Builder clearJoinMessage() {
+        if (joinMessageBuilder_ == null) {
+          joinMessage_ = poke.comm.Image.JoinMessage.getDefaultInstance();
+          onChanged();
+        } else {
+          joinMessageBuilder_.clear();
+        }
+        bitField0_ = (bitField0_ & ~0x00000008);
+        return this;
+      }
+      /**
+       * <code>optional .JoinMessage joinMessage = 4;</code>
+       */
+      public poke.comm.Image.JoinMessage.Builder getJoinMessageBuilder() {
+        bitField0_ |= 0x00000008;
+        onChanged();
+        return getJoinMessageFieldBuilder().getBuilder();
+      }
+      /**
+       * <code>optional .JoinMessage joinMessage = 4;</code>
+       */
+      public poke.comm.Image.JoinMessageOrBuilder getJoinMessageOrBuilder() {
+        if (joinMessageBuilder_ != null) {
+          return joinMessageBuilder_.getMessageOrBuilder();
+        } else {
+          return joinMessage_;
+        }
+      }
+      /**
+       * <code>optional .JoinMessage joinMessage = 4;</code>
+       */
+      private com.google.protobuf.SingleFieldBuilder<
+          poke.comm.Image.JoinMessage, poke.comm.Image.JoinMessage.Builder, poke.comm.Image.JoinMessageOrBuilder> 
+          getJoinMessageFieldBuilder() {
+        if (joinMessageBuilder_ == null) {
+          joinMessageBuilder_ = new com.google.protobuf.SingleFieldBuilder<
+              poke.comm.Image.JoinMessage, poke.comm.Image.JoinMessage.Builder, poke.comm.Image.JoinMessageOrBuilder>(
+                  getJoinMessage(),
+                  getParentForChildren(),
+                  isClean());
+          joinMessage_ = null;
+        }
+        return joinMessageBuilder_;
       }
 
       // @@protoc_insertion_point(builder_scope:Request)
@@ -3025,6 +3757,11 @@ public final class Image {
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
       internal_static_Ping_fieldAccessorTable;
   private static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_JoinMessage_descriptor;
+  private static
+    com.google.protobuf.GeneratedMessage.FieldAccessorTable
+      internal_static_JoinMessage_fieldAccessorTable;
+  private static final com.google.protobuf.Descriptors.Descriptor
     internal_static_Request_descriptor;
   private static
     com.google.protobuf.GeneratedMessage.FieldAccessorTable
@@ -3039,13 +3776,16 @@ public final class Image {
   static {
     java.lang.String[] descriptorData = {
       "\n\013image.proto\"s\n\006Header\022\013\n\003md5\030\001 \001(\t\022\021\n\t" +
-      "client_id\030\002 \002(\005\022\022\n\ncluster_id\030\003 \001(\005\022\021\n\ti" +
-      "s_client\030\004 \002(\010\022\017\n\007caption\030\005 \002(\t\022\021\n\tis_le" +
-      "ader\030\006 \001(\010\"\'\n\007PayLoad\022\014\n\004data\030\001 \002(\014\022\016\n\006r" +
-      "eq_id\030\002 \001(\t\"\027\n\004Ping\022\017\n\007is_ping\030\001 \002(\010\"R\n\007" +
-      "Request\022\027\n\006header\030\001 \002(\0132\007.Header\022\031\n\007payl" +
-      "oad\030\002 \002(\0132\010.PayLoad\022\023\n\004ping\030\003 \002(\0132\005.Ping" +
-      "B\r\n\tpoke.commH\001"
+      "client_id\030\002 \001(\005\022\022\n\ncluster_id\030\003 \001(\005\022\021\n\ti" +
+      "s_client\030\004 \001(\010\022\017\n\007caption\030\005 \001(\t\022\021\n\tis_le" +
+      "ader\030\006 \001(\010\"\'\n\007PayLoad\022\014\n\004data\030\001 \001(\014\022\016\n\006r" +
+      "eq_id\030\002 \001(\t\"\027\n\004Ping\022\017\n\007is_ping\030\001 \001(\010\"g\n\013" +
+      "JoinMessage\022\024\n\014from_node_id\030\001 \001(\005\022\022\n\nto_" +
+      "node_id\030\002 \001(\005\022\027\n\017from_cluster_id\030\003 \001(\005\022\025" +
+      "\n\rto_cluster_id\030\004 \001(\005\"u\n\007Request\022\027\n\006head" +
+      "er\030\001 \001(\0132\007.Header\022\031\n\007payload\030\002 \001(\0132\010.Pay" +
+      "Load\022\023\n\004ping\030\003 \001(\0132\005.Ping\022!\n\013joinMessage",
+      "\030\004 \001(\0132\014.JoinMessageB\r\n\tpoke.commH\001"
     };
     com.google.protobuf.Descriptors.FileDescriptor.InternalDescriptorAssigner assigner =
         new com.google.protobuf.Descriptors.FileDescriptor.    InternalDescriptorAssigner() {
@@ -3077,12 +3817,18 @@ public final class Image {
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Ping_descriptor,
         new java.lang.String[] { "IsPing", });
-    internal_static_Request_descriptor =
+    internal_static_JoinMessage_descriptor =
       getDescriptor().getMessageTypes().get(3);
+    internal_static_JoinMessage_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessage.FieldAccessorTable(
+        internal_static_JoinMessage_descriptor,
+        new java.lang.String[] { "FromNodeId", "ToNodeId", "FromClusterId", "ToClusterId", });
+    internal_static_Request_descriptor =
+      getDescriptor().getMessageTypes().get(4);
     internal_static_Request_fieldAccessorTable = new
       com.google.protobuf.GeneratedMessage.FieldAccessorTable(
         internal_static_Request_descriptor,
-        new java.lang.String[] { "Header", "Payload", "Ping", });
+        new java.lang.String[] { "Header", "Payload", "Ping", "JoinMessage", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

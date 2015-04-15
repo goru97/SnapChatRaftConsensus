@@ -63,7 +63,7 @@ public static void main(String[] args){
 			if (clientInput != null && "Y".equalsIgnoreCase(clientInput)) {
 
 				
-				System.out.println("Sending Image ");
+				System.out.println("Sending Image...");
 				cone.run(cc);
 				
 			}

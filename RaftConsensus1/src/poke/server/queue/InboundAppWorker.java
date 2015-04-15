@@ -32,13 +32,13 @@ public class InboundAppWorker extends Thread {
 	protected static Logger logger = LoggerFactory.getLogger("server");
 
 	int workerId;
-	PerChannelQueue sq;
+	PerChannelQueue pqChannel;
 	boolean forever = true;
 
 	public InboundAppWorker(ThreadGroup tgrp, int workerId, PerChannelQueue sq) {
 		super(tgrp, "inbound-" + workerId);
 		this.workerId = workerId;
-		this.sq = sq;
+		this.pqChannel = sq;
 
 		if (sq.inbound == null)
 			throw new RuntimeException("connection worker detected null inbound queue");
@@ -47,19 +47,19 @@ public class InboundAppWorker extends Thread {
 	@Override
 	public void run() {
 		System.out.println("Inbound Worker Thread Running");
-		Channel conn = sq.getChannel();
+		Channel conn = pqChannel.getChannel();
 		if (conn == null || !conn.isOpen()) {
 			logger.error("connection missing, no inbound communication");
 			return;
 		}
 
 		while (true) {
-			if (!forever && sq.inbound.size() == 0)
+			if (!forever && pqChannel.inbound.size() == 0)
 				break;
 
 			try {
 				// block until a message is enqueued
-				GeneratedMessage msg = sq.inbound.take();
+				GeneratedMessage msg = pqChannel.inbound.take();
 				// process request and enqueue response
 				if (msg instanceof Request) {
 					Request req = ((Request) msg);
@@ -79,8 +79,10 @@ public class InboundAppWorker extends Thread {
 
 					Request reply = null;
 					 */
-
-
+					if(((Request) msg).hasJoinMessage())
+						System.out.println("This is a node join message from "+((Request)msg).getJoinMessage().getFromNodeId());
+					
+					else{
 					ImgResource rsc = (ImageResource)ResourceFactory.getInstance().getImageResourceInstance();
 					if (rsc == null) {
 						logger.error("failed to obtain resource for " + req);
@@ -91,9 +93,10 @@ public class InboundAppWorker extends Thread {
 						// (reply).
 						logger.debug("Replicating the image across cluster");
 						System.out.println("Replicating the image across cluster");
+						rsc.setChannel(pqChannel);
 						rsc.process(req);
 					}
-
+					}
 					
 
 				}

@@ -78,7 +78,7 @@ public class PerChannelQueue implements ChannelQueue {
 		// channel.getCloseFuture().addListener(new CloseListener(this));
 	}
 
-	protected Channel getChannel() {
+	public Channel getChannel() {
 		return channel;
 	}
 

@@ -30,6 +30,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import poke.comm.Image.JoinMessage;
+import poke.comm.Image.Request;
 import poke.core.Mgmt.Management;
 import poke.core.Mgmt.MgmtHeader;
 import poke.core.Mgmt.Network;
@@ -237,6 +239,24 @@ public class HeartMonitor {
 		return rtn;
 	}
 
+	public boolean startAppHeartbeat() {
+		
+		System.out.println("****startAppHeartbeat****");
+		Channel ch = connect();
+		if (!ch.isWritable()) {
+			logger.error("Channel to node " + toNodeId + " not writable!");
+		}
+
+		logger.info("HeartMonitor sending join message to " + toNodeId);
+		Request.Builder reqBuilder = Request.newBuilder();
+		JoinMessage.Builder joinBuilder = JoinMessage.newBuilder();
+		joinBuilder.setFromNodeId(iamNode);
+		joinBuilder.setToNodeId(toNodeId);
+		ch.writeAndFlush(reqBuilder.setJoinMessage(joinBuilder.build()).build()).syncUninterruptibly();
+		
+		return true;
+	}
+	
 	public String getHost() {
 		return host;
 	}
