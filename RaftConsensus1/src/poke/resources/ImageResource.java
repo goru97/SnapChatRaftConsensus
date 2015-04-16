@@ -146,7 +146,7 @@ public class ImageResource implements ImgResource{
 				currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
 				Channel appChannel = ConnectionManager.getConnection(currentLeaderId, false);
 				Channel mgmtChannel = ConnectionManager.getConnection(currentLeaderId, true);
-
+				appChannel.writeAndFlush(request);
 				System.out.println("appChannel -- "+appChannel+" mgmtChannel -- "+mgmtChannel);
 				//channel.writeAndFlush(request);
 
