@@ -15,12 +15,12 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
 	public ServerInitializer(boolean enableCompression) {
 		compress = enableCompression;
-		System.out.println("Inside Server Initializer");
+	//	System.out.println("Inside Server Initializer");
 	}
 
 	@Override
 	public void initChannel(SocketChannel ch) throws Exception {
-		System.out.println("Inside InitChannel");
+	//	System.out.println("Inside InitChannel");
 		
 		ChannelPipeline pipeline = ch.pipeline();
 

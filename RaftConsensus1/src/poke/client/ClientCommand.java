@@ -74,7 +74,7 @@ public class ClientCommand {
 	
 	public void sendImage(String reqId, String caption, ByteString images , int clientID) {
 		
-		System.out.println("Images -->" +images);
+	//	System.out.println("Images -->" +images);
 		
 		// payload containing data
 		poke.comm.Image.Request.Builder r = poke.comm.Image.Request.newBuilder();

@@ -291,7 +291,7 @@ public class HeartMonitor {
 
 	public boolean startAppHeartbeat() {
 		
-		System.out.println("****startAppHeartbeat****");
+		//System.out.println("****startAppHeartbeat****");
 		Channel ch = connect(true);
 		if (!ch.isWritable()) {
 			logger.error("Channel to node " + toNodeId + " not writable!");

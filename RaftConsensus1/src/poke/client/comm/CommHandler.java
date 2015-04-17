@@ -70,7 +70,7 @@ public class CommHandler extends SimpleChannelInboundHandler<Request> {
 			e.printStackTrace();
 		}
 		
-	System.out.println("cf -->" +cf.isDone() + cf.isSuccess());	
+	//System.out.println("cf -->" +cf.isDone() + cf.isSuccess());	
 		if (cf.isDone() && !cf.isSuccess()) {
 			System.out.println("failed to poke!");
 			logger.error("failed to poke!");

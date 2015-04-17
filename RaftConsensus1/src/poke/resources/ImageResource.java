@@ -46,7 +46,7 @@ public class ImageResource implements ImgResource{
 	public Request process(Request request){
 		
 		if(request.hasJoinMessage()){
-			System.out.println("***Adding Adjacent Node***" + request.getJoinMessage().getFromNodeId() + "Node channel--- "+getChannel().getChannel());
+			//System.out.println("***Adding Adjacent Node***" + request.getJoinMessage().getFromNodeId() + "Node channel--- "+getChannel().getChannel());
 		ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getChannel().getChannel(), false);	
 		}
 		

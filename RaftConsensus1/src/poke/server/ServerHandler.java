@@ -53,12 +53,12 @@ public class ServerHandler extends SimpleChannelInboundHandler<Request> {
 	public ServerHandler() {
 		// logger.info("** ServerHandler created **");
 		
-		System.out.println("** App ServerHandler created **");
+		//System.out.println("** App ServerHandler created **");
 	}
 
 	@Override
 	public void channelRead0(ChannelHandlerContext ctx, Request req) throws Exception {
-		System.out.println("Inside Channel read 0");
+	//	System.out.println("Inside Channel read 0");
 		
 		// processing is deferred to the worker threads
 		//if (logger.isDebugEnabled())

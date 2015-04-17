@@ -98,12 +98,12 @@ public class HeartbeatPusher extends Thread {
 							
 							
 							if(hb.getClass().equals(HeartMonitor.class)){
-								System.out.println("*****HeartMonitor****");
+							//	System.out.println("*****HeartMonitor****");
 							
 							hb.startHeartbeat();
 							}
 							else if(hb.getClass().equals(AppHeartMonitor.class)){
-								System.out.println("*****AppHeartMonitor****");
+							//	System.out.println("*****AppHeartMonitor****");
 								hb.startAppHeartbeat();
 							}
 						} catch (Exception ie) {

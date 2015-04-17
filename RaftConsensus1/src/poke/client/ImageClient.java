@@ -47,7 +47,7 @@ public static void main(String[] args){
 		
 		Scanner sc = new Scanner(System.in);
 		
-		ClientCommand cc = new ClientCommand("localhost", 5570);
+		ClientCommand cc = new ClientCommand("localhost", 5571);
 		CommListener listener = new ClientPrintListener("First Client");
 		cc.addListener(listener);
 
@@ -57,15 +57,16 @@ public static void main(String[] args){
 
 		//do {
 
-			System.out.println("Do you want to send an image (Y/N)?");
+			System.out.println("Do you want to send images (Y/N)?");
 			clientInput = sc.nextLine();
 
 			if (clientInput != null && "Y".equalsIgnoreCase(clientInput)) {
 
+				for(int i=0;i<20;i++){
+				System.out.println("Sending Image... "+i);
 				
-				System.out.println("Sending Image... ");
 				cone.run(cc);
-				
+				}
 			}
 
 	//	}

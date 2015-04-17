@@ -121,7 +121,7 @@ public class CompleteRaftManager {
 
 	private int getRandomElectionTimeOut(){
 		int randomTimeOut = new Random().nextInt(10000 - 5000 + 1) + 5000;
-		System.out.println("New TTL --> "+randomTimeOut);
+	//	System.out.println("New TTL --> "+randomTimeOut);
 		return randomTimeOut;
 	}
 
@@ -255,7 +255,7 @@ public class CompleteRaftManager {
 		 */
 
 		int electionActionVal = req.getAction().getNumber();
-		System.out.println("electionActionVal  "+electionActionVal);
+	
 		switch (electionActionVal) {
 
 		case ElectionAction.APPEND_VALUE:
@@ -300,7 +300,7 @@ public class CompleteRaftManager {
 		case ElectionAction.VOTE_VALUE:
 			voteCount++;
 			votedFor=-1;
-			System.out.println("Leader --> "+isLeader());
+//			System.out.println("Leader --> "+isLeader());
 			if(isLeader()){
 				//currentTerm=mgmt.getRaftMessage().getTerm();
 				state=State.LEADER;

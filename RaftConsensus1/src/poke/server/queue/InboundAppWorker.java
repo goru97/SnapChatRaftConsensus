@@ -89,8 +89,8 @@ public class InboundAppWorker extends Thread {
 						// message communication can be two-way or one-way.
 						// One-way communication will not produce a response
 						// (reply).
-						logger.debug("Replicating the image across cluster");
-						System.out.println("Replicating the image across cluster");
+						//logger.debug("Replicating the image across cluster");
+						//System.out.println("Replicating the image across cluster");
 						rsc.setChannel(pqChannel);
 						rsc.process(req);
 					}
