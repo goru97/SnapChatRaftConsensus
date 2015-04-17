@@ -16,7 +16,7 @@
 package poke.server.queue;
 
 import io.netty.channel.Channel;
-import poke.comm.Image.Request;
+import poke.comm.App.Request;
 
 /**
  * The channel queue is the interaction we expect between the resources and

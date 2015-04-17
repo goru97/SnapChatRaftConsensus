@@ -46,7 +46,7 @@ public class CommInitializer extends ChannelInitializer<SocketChannel> {
 		// DebugFrameDecoder(67108864, 0, 4, 0, 4));
 
 		// decoder must be first
-		pipeline.addLast("protobufDecoder", new ProtobufDecoder(poke.comm.Image.Request.getDefaultInstance()));
+		pipeline.addLast("protobufDecoder", new ProtobufDecoder(poke.comm.App.Request.getDefaultInstance()));
 		pipeline.addLast("frameEncoder", new LengthFieldPrepender(4));
 		pipeline.addLast("protobufEncoder", new ProtobufEncoder());
 		logger.info("Before Channel handler");

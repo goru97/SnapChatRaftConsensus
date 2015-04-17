@@ -30,8 +30,8 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import poke.comm.Image.JoinMessage;
-import poke.comm.Image.Request;
+import poke.comm.App.JoinMessage;
+import poke.comm.App.Request;
 import poke.core.Mgmt.Management;
 import poke.core.Mgmt.MgmtHeader;
 import poke.core.Mgmt.Network;

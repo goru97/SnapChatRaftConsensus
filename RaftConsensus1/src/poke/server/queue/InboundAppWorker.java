@@ -20,9 +20,10 @@ import io.netty.channel.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-//import poke.comm.App.Request;
-import poke.comm.Image.Request;
+import poke.comm.App.Request;
+//import poke.comm.Image.Request;
 import poke.resources.ImageResource;
+import poke.server.managers.CompleteRaftManager;
 import poke.server.resources.ImgResource;
 import poke.server.resources.ResourceFactory;
 
@@ -92,6 +93,7 @@ public class InboundAppWorker extends Thread {
 						//logger.debug("Replicating the image across cluster");
 						//System.out.println("Replicating the image across cluster");
 						rsc.setChannel(pqChannel);
+						rsc.setConf(CompleteRaftManager.getConf());
 						rsc.process(req);
 					}
 					

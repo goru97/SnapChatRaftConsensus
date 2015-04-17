@@ -48,6 +48,9 @@ public class CompleteRaftManager {
 		FOLLOWER, CANDIDATE, LEADER
 	}
 
+	public static ServerConf getConf(){
+		return conf;
+	}
 	public static CompleteRaftManager initManager(ServerConf conf) {
 		CompleteRaftManager.conf = conf;
 		instance.compareAndSet(null, new CompleteRaftManager());

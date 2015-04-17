@@ -16,19 +16,17 @@
 package poke.client;
 
 
-import io.netty.channel.Channel;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import poke.client.comm.CommConnection;
 import poke.client.comm.CommListener;
+import poke.comm.App.ClientMessage;
 import poke.comm.App.Header;
 import poke.comm.App.Payload;
 import poke.comm.App.Ping;
 import poke.comm.App.Request;
 import poke.comm.Image.PayLoad;
-import poke.server.managers.ConnectionManager;
 
 import com.google.protobuf.ByteString;
 
@@ -72,6 +70,33 @@ public class ClientCommand {
 
 	private Request tempReq;
 	
+	
+	public void	sendImage1(String reqId, String caption, ByteString images , int clientID) {
+	Request.Builder r = Request.newBuilder();
+	Header.Builder h = Header.newBuilder();
+	h.setOriginator(clientID);
+	h.setTag("Sending Image");
+	h.setTime(System.currentTimeMillis());
+	r.setHeader(h.build());
+	
+	Payload.Builder p = Payload.newBuilder();
+	ClientMessage.Builder c = ClientMessage.newBuilder();
+	c.setMsgId(reqId);
+	c.setMsgImageBits(images);
+	c.setIsClient(true);
+	c.setMsgImageName(caption);
+	p.setClientMessage(c.build());
+	r.setBody(p.build());
+	Request req = r.build();
+	try {	
+			comm.sendMessage(req);
+		} catch (Exception e) {
+			logger.warn("Unable to deliver message, queuing");
+		}
+	
+	}
+	
+	/*
 	public void sendImage(String reqId, String caption, ByteString images , int clientID) {
 		
 	//	System.out.println("Images -->" +images);
@@ -111,6 +136,7 @@ public class ClientCommand {
 			logger.warn("Unable to deliver message, queuing");
 		}
 	}
+	*/
 	
 	/**
 	 * Our network's equivalent to ping

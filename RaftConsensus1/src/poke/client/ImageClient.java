@@ -35,7 +35,7 @@ public class ImageClient {
 			
 			String uniqueRequestID = UUID.randomUUID().toString().replaceAll("-", "");			
 			ByteString bs = ByteString.copyFrom(myByeImage);
-			cc.sendImage(uniqueRequestID, "Test Image", bs , clientID);
+			cc.sendImage1(uniqueRequestID, "Test Image", bs , clientID);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -62,11 +62,11 @@ public static void main(String[] args){
 
 			if (clientInput != null && "Y".equalsIgnoreCase(clientInput)) {
 
-				for(int i=0;i<20;i++){
-				System.out.println("Sending Image... "+i);
+				//for(int i=0;i<20;i++){
+				System.out.println("Sending Image... ");
 				
 				cone.run(cc);
-				}
+				//}
 			}
 
 	//	}

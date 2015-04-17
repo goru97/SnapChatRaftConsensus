@@ -96,16 +96,9 @@ public class OnlyOneQueue implements ChannelQueue {
 		;
 	}
 
-	@Override
-	public void enqueueRequest(poke.comm.Image.Request req, Channel channel) {
-		
-	}
-	@Override
-	public void enqueueResponse(poke.comm.Image.Request reply, Channel channel) {
-		
-	}
+
 	
-	
+	@Override
 	public void enqueueRequest(Request req, Channel channel) {
 		try {
 			OneQueueEntry oqe = new OneQueueEntry(req, channel);
@@ -115,7 +108,7 @@ public class OnlyOneQueue implements ChannelQueue {
 		}
 	}
 
-	
+	@Override
 	public void enqueueResponse(Request reply, Channel channel) {
 		if (reply == null)
 			return;

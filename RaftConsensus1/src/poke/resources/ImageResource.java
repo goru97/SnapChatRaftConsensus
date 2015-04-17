@@ -13,7 +13,7 @@ import java.util.Set;
 
 import javax.imageio.ImageIO;
 
-import poke.comm.Image.Request;
+import poke.comm.App.Request;
 import poke.resources.vo.ClientData;
 import poke.server.conf.ServerConf;
 import poke.server.managers.CompleteRaftManager;
@@ -53,7 +53,7 @@ public class ImageResource implements ImgResource{
 		else{
 		boolean isLeader = false;
 		int currentLeaderId = -1;
-		boolean isClient= request.getHeader().getIsClient();
+		boolean isClient= request.getBody().getClientMessage().getIsClient();
 		
 	/*	
 		if(isClient){
@@ -70,9 +70,10 @@ public class ImageResource implements ImgResource{
 */
 		String currentState = CompleteRaftManager.getInstance().getCurrentState();
 		System.out.println("Current State --> "+currentState);
+		
 		if(currentState.equalsIgnoreCase("Leader")){
 			isLeader = true;
-			Request req = RaftMessageBuilder.buildIntraClusterImageMessage(request,isLeader);
+			Request req = RaftMessageBuilder.buildIntraClusterImageMessage(request,conf.getNodeId());
 			ConnectionManager.broadcastAndFlush(req);
 			//save image to file system	
 /*
@@ -83,8 +84,8 @@ public class ImageResource implements ImgResource{
 				channel.enqueueRequest(request, null);
 			}
 */
-			byte[] byteImage = request.getPayload().getData().toByteArray();
-			String key = request.getPayload().getReqId();
+			byte[] byteImage = request.getBody().getClientMessage().getMsgImageBits().toByteArray();
+			String key = request.getBody().getClientMessage().getMsgId();
 			InputStream in = new ByteArrayInputStream(byteImage);
 			BufferedImage bImageFromConvert;
 
@@ -105,15 +106,15 @@ public class ImageResource implements ImgResource{
 
 		}
 
-		else{
-			isLeader = false;
-			if(request.getHeader().hasIsLeader()){   // if a message sent by leader then simply save the image
-				if(request.getHeader().getIsLeader()){
+		else
+			  // if a message sent by leader then simply save the image
+				if(request.getHeader().getOriginator() == CompleteRaftManager.getInstance().getLeaderId()){
+				
+					isLeader = false;
 					//save image to file system	
 
-
-					byte[] byteImage = request.getPayload().getData().toByteArray();
-					String key = request.getPayload().getReqId();
+					byte[] byteImage = request.getBody().getClientMessage().getMsgImageBits().toByteArray();
+					String key = request.getBody().getClientMessage().getMsgId();
 					InputStream in = new ByteArrayInputStream(byteImage);
 					BufferedImage bImageFromConvert;
 
@@ -131,36 +132,27 @@ public class ImageResource implements ImgResource{
 					}
 
 
-
 				}
-				else{ // in-case a follower send to another follower
-					currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
-					Channel channel = ConnectionManager.getConnection(currentLeaderId, false);
-					channel.writeAndFlush(request);
-				}
+				
 
-			}
 			else{ //if sent by a client, send message to current leader
 
 				System.out.println("****Image recieved by follower sent by client****");
 				currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
 				Channel appChannel = ConnectionManager.getConnection(currentLeaderId, false);
-				Channel mgmtChannel = ConnectionManager.getConnection(currentLeaderId, true);
+				//Channel mgmtChannel = ConnectionManager.getConnection(currentLeaderId, true);
 				appChannel.writeAndFlush(request);
-				System.out.println("appChannel -- "+appChannel+" mgmtChannel -- "+mgmtChannel);
+				//System.out.println("appChannel -- "+appChannel+" mgmtChannel -- "+mgmtChannel);
 				//channel.writeAndFlush(request);
 
 			}
 
 		}
 
-
-		}
-
 		return request;
 	}
 
-
+   @Override
 	public void setConf(ServerConf conf) {
 		this.conf = conf;
 		this.nodeId =conf.getNodeId();

@@ -115,7 +115,7 @@ public class DiscreteQueue implements ChannelQueue {
 		;
 	}
 
-	
+	@Override
 	public void enqueueRequest(Request req, Channel channel) {
 		if (req == null || channel == null)
 			return;
@@ -154,15 +154,7 @@ public class DiscreteQueue implements ChannelQueue {
 		queue.put(qt.queueTime, qt);
 	}
 
-	
-	@Override
-	public void enqueueRequest(poke.comm.Image.Request req, Channel channel) {
-		
-	}
-	@Override
-	public void enqueueResponse(poke.comm.Image.Request reply, Channel channel) {
-		
-	}
+
 	
 	/**
 	 * when a queueTime advance is received, the inbound queue can be searched
@@ -193,7 +185,7 @@ public class DiscreteQueue implements ChannelQueue {
 		}
 	}
 
-	
+	@Override
 	public void enqueueResponse(Request reply, Channel channel) {
 		if (reply == null)
 			return;

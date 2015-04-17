@@ -25,7 +25,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import poke.comm.Image.Request;
+import poke.comm.App.Request;
 
 /**
  * A server queue exists for each connection (channel). A per-channel queue
