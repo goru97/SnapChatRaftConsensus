@@ -23,6 +23,7 @@ import poke.client.comm.CommConnection;
 import poke.client.comm.CommListener;
 import poke.comm.App.ClientMessage;
 import poke.comm.App.Header;
+import poke.comm.App.JoinMessage;
 import poke.comm.App.Payload;
 import poke.comm.App.Ping;
 import poke.comm.App.Request;
@@ -56,6 +57,7 @@ public class ClientCommand {
 
 	private void init() {
 		comm = new CommConnection(host, port);
+		
 	}
 
 	/**
@@ -70,6 +72,19 @@ public class ClientCommand {
 
 	private Request tempReq;
 	
+	public void	sendJoinMessage(int clientID){
+		Request.Builder req = Request.newBuilder();
+
+		JoinMessage.Builder jm = JoinMessage.newBuilder();
+		jm.setFromNodeId(clientID);
+		req.setJoinMessage(jm.build());
+		try {	
+			
+			comm.sendJoinMessage(req.build());
+		} catch (Exception e) {
+			logger.warn("Unable to deliver join message, queuing");
+		}
+	}
 	
 	public void	sendImage(String reqId, String caption, ByteString images , int clientID) {
 	Request.Builder r = Request.newBuilder();
@@ -86,14 +101,14 @@ public class ClientCommand {
 	c.setIsClient(true);
 	c.setMsgImageName(caption);
 	c.setSenderUserName(clientID);
-	//c.setReceiverUserName(1);
+	c.setReceiverUserName(4567);
 	p.setClientMessage(c.build());
 	r.setBody(p.build());
 	Request req = r.build();
 	try {	
 			comm.sendMessage(req);
 		} catch (Exception e) {
-			logger.warn("Unable to deliver message, queuing");
+			logger.warn("Unable to deliver Image, queuing");
 		}
 	
 	}

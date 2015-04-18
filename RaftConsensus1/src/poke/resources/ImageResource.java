@@ -51,61 +51,53 @@ public class ImageResource implements ImgResource{
 	}
 
 	public void sendImageToCluster(Request req, Channel channel){
-channel.writeAndFlush(req);
+		channel.writeAndFlush(req);
 	}
 
 
 	@Override
 	public Request process(Request request){
 
-		if(request.hasJoinMessage()){ //Either a client or a cluster is requesting connection with our system
-			String currentState = CompleteRaftManager.getInstance().getCurrentState();
-			
-			if(currentState.equalsIgnoreCase("Leader")){ //Joins can only be approved by the leader
-				
-				System.out.println("*****Join message received by Leader*****");
-			boolean isClient= request.getBody().getClientMessage().getIsClient();
-			
-			if(isClient){  //client is requesting connection with our system
-				int clientId = request.getBody().getClientMessage().getSenderUserName();
-				if(!clientInfo.containsKey(clientId))
-					clientInfo.put(clientId, new ClientData(getPQChannel()));
-				else
-					clientInfo.get(clientId).setPQChannel(getPQChannel());
+		String currentState = CompleteRaftManager.getInstance().getCurrentState();
+
+		if(currentState.equalsIgnoreCase("Leader")){
+
+			if(request.hasJoinMessage()){ //Either a client or a cluster is requesting connection with our system
+
+				boolean isCluster = request.getJoinMessage().hasFromClusterId();
+
+				if(isCluster){
+					int clusterId = request.getJoinMessage().getFromClusterId();
+					if(!clusterInfo.containsKey(clusterId))
+						clusterInfo.put(clusterId, new ClientData(getPQChannel()));
+					else
+						clusterInfo.get(clusterId).setPQChannel(getPQChannel());	
+				}
+
+
+				else{  //client is requesting connection with our system
+
+					if(request.getJoinMessage().hasToNodeId()) //Join request coming from adjacent nodes
+						ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getPQChannel().getChannel(), false);
+
+					else{ //Actual clients are sending join requests
+						int clientId = request.getJoinMessage().getFromNodeId();
+						if(!clientInfo.containsKey(clientId))
+							clientInfo.put(clientId, new ClientData(getPQChannel()));
+						else
+							clientInfo.get(clientId).setPQChannel(getPQChannel());
+					}
+
+				}
+
+
+
+
 
 			}
-			else{ //Another cluster/System is requesting connection with our system
-				int clusterId = request.getBody().getClusterMessage().getClusterId();
-				if(!clusterInfo.containsKey(clusterId))
-					clientInfo.put(clusterId, new ClientData(getPQChannel()));
-				else
-					clientInfo.get(clusterId).setPQChannel(getPQChannel());
-             
-			}
-			
-			
-			}
-			else if("Adjacent".equalsIgnoreCase(request.getHeader().getTag())) //Join request coming from adjacent nodes
-            	//setup the adjacent node connections
-     			ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getPQChannel().getChannel(), false);
-			else{ //coming from cluster to follower
-		
-				System.out.println("*****Join message received by follower, redirecting to Leader*****");
-				int currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
-				Channel appChannel = ConnectionManager.getConnection(currentLeaderId, false);
-				appChannel.writeAndFlush(request);
-			}
-			
-		}
 
-		else{  //There's an incoming image from client or cluster
-			boolean isLeader = false;
-			int currentLeaderId = -1;
-
-			String currentState = CompleteRaftManager.getInstance().getCurrentState();
-		
-			if(currentState.equalsIgnoreCase("Leader")){
-				isLeader = true;
+			else{  //There's an incoming image from client or cluster
+				int currentLeaderId = -1;
 
 				if(request.getBody().hasClusterMessage()){  // if image received from any cluster
 
@@ -120,6 +112,7 @@ channel.writeAndFlush(req);
 						if(entry.getKey() == receiverId){
 							Channel channel = entry.getValue().getPQChannel().getChannel();
 							sendImgToClient(request,channel);
+							System.out.println("***Sending Image to the Client****");
 							foundTheClient = true;
 							break;
 						}
@@ -128,18 +121,18 @@ channel.writeAndFlush(req);
 						Iterator<Entry<Integer,ClientData>> itr = clusterInfo.entrySet().iterator();
 						while(i.hasNext()){
 							Map.Entry<Integer, ClientData> entry = i.next();
-								Channel channel = entry.getValue().getPQChannel().getChannel();
-								sendImageToCluster(request,channel);
-								foundTheClient = true;
-								break;
-						
+							Channel channel = entry.getValue().getPQChannel().getChannel();
+							sendImageToCluster(request,channel);
+							System.out.println("***Sending Image to other Clusters****");
+							break;
+
+						}
+
 					}
-					
 				}
-				}
-				
+
 				else if(request.getBody().hasClientMessage()){ // if image received from any client
-					
+
 					ClientMessage msg = request.getBody().getClientMessage();
 					System.out.println("***Image received from client*** "+msg.getReceiverUserName());
 					int receiverId = msg.getReceiverUserName();
@@ -151,6 +144,7 @@ channel.writeAndFlush(req);
 						if(entry.getKey() == receiverId){
 							Channel channel = entry.getValue().getPQChannel().getChannel();
 							sendImgToClient(request,channel);
+							System.out.println("***Sending Image to the Client****");
 							foundTheClient = true;
 							break;
 						}
@@ -159,16 +153,16 @@ channel.writeAndFlush(req);
 						Iterator<Entry<Integer,ClientData>> itr = clusterInfo.entrySet().iterator();
 						while(i.hasNext()){
 							Map.Entry<Integer, ClientData> entry = i.next();
-								Channel channel = entry.getValue().getPQChannel().getChannel();
-								sendImageToCluster(request,channel);
-								foundTheClient = true;
-								break;
-						
+							Channel channel = entry.getValue().getPQChannel().getChannel();
+							sendImageToCluster(request,channel);
+							System.out.println("***Sending Image to other Clusters****");
+							break;
+
+						}
+
 					}
-					
 				}
-				}
-				
+
 
 				Request req = RaftMessageBuilder.buildIntraClusterImageMessage(request,conf.getNodeId()); //Replicate across our own cluster for fault tolerance
 				ConnectionManager.broadcastAndFlush(req);
@@ -194,12 +188,48 @@ channel.writeAndFlush(req);
 
 
 			}
+		}
+		else{
+		
+			int currentLeaderId =-1;
+			if(request.hasJoinMessage()){
 
-			else
+				//Either a client or a cluster is requesting connection with our system
+
+				boolean isCluster = request.getJoinMessage().hasFromClusterId();
+
+				if(isCluster){
+					currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
+					Channel appChannel = ConnectionManager.getConnection(currentLeaderId, false);
+					//Channel mgmtChannel = ConnectionManager.getConnection(currentLeaderId, true);
+					appChannel.writeAndFlush(request);
+				}
+
+
+				else{  //client is requesting connection with our system
+
+					if(request.getJoinMessage().hasToNodeId()) //Join request coming from adjacent nodes
+						ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getPQChannel().getChannel(), false);
+
+					else{ //Actual clients are sending join requests
+						currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
+						Channel appChannel = ConnectionManager.getConnection(currentLeaderId, false);
+						//Channel mgmtChannel = ConnectionManager.getConnection(currentLeaderId, true);
+						appChannel.writeAndFlush(request);
+					}
+
+				}
+
+
+
+
+
+
+			}
+			else{
 				// if a message sent by leader then simply save the image
 				if(request.getHeader().getOriginator() == CompleteRaftManager.getInstance().getLeaderId()){
 
-					isLeader = false;
 					//save image to file system	
 
 					byte[] byteImage = request.getBody().getClientMessage().getMsgImageBits().toByteArray();
@@ -236,18 +266,20 @@ channel.writeAndFlush(req);
 
 				}
 
+			}	
 		}
-		
-		return request;
-	}
 
-	@Override
-	public void setConf(ServerConf conf) {
-		this.conf = conf;
-		this.nodeId =conf.getNodeId();
-	}
 
-	public ServerConf getConf(){
-		return this.conf;
-	}
+return request;
+}
+
+@Override
+public void setConf(ServerConf conf) {
+	this.conf = conf;
+	this.nodeId =conf.getNodeId();
+}
+
+public ServerConf getConf(){
+	return this.conf;
+}
 }

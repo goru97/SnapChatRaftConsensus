@@ -19,6 +19,11 @@ public class ImageClient {
 		public ImageClient(int clientID) {
 			this.clientID = clientID;
 		}
+		
+		
+	public void sendJoinMessage(ClientCommand cc){
+		cc.sendJoinMessage(clientID);
+	}
 	public void run(ClientCommand cc) {
 
 		try {
@@ -52,13 +57,13 @@ public static void main(String[] args){
 		cc.addListener(listener);
 
 		ImageClient cone = new ImageClient(24);
-		
+		cone.sendJoinMessage(cc);
 		String clientInput = "";
 
 		//do {
 
-			//System.out.println("Do you want to send images (Y/N)?");
-			//clientInput = sc.nextLine();
+			System.out.println("Do you want to send images (Y/N)?");
+			clientInput = sc.nextLine();
 
 		//	if (clientInput != null && "Y".equalsIgnoreCase(clientInput)) {
 

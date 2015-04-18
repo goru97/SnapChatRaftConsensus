@@ -29,6 +29,7 @@ import java.util.concurrent.LinkedBlockingDeque;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import poke.comm.App.JoinMessage;
 import poke.comm.App.Request;
 
 import com.google.protobuf.GeneratedMessage;
@@ -92,6 +93,12 @@ public class CommConnection {
 	public void sendMessage(Request req) throws Exception {
 		// enqueue message
 		outbound.put(req);
+	}
+	
+	public void sendJoinMessage(Request req){
+		Channel ch = connect();
+		System.out.println("***Joining with the System***");
+		ch.writeAndFlush(req);
 	}
 
 	/**
