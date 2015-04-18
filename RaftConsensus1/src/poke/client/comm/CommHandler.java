@@ -109,6 +109,8 @@ public class CommHandler extends SimpleChannelInboundHandler<Request> {
 	 */
 	@Override
 	protected void channelRead0(ChannelHandlerContext ctx, Request msg) throws Exception {
+		System.out.println("Image Recieved by client"+msg);
+		
 		for (String id : listeners.keySet()) {
 			CommListener cl = listeners.get(id);
 

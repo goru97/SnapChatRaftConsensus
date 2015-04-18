@@ -371,7 +371,7 @@ public class CompleteRaftManager {
 								String host = n.getIp();
 								int port = n.getPort();
 								ChannelFuture channel = connect(host, port);
-								Request req = createClusterJoinMessage(35325,
+								Request req = createClusterJoinMessage(4567,
 										conf.getNodeId(), key, port);
 								if (channel != null) {
 									channel = channel.channel().writeAndFlush(req);

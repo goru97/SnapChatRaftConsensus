@@ -51,7 +51,7 @@ public static void main(String[] args){
 		CommListener listener = new ClientPrintListener("First Client");
 		cc.addListener(listener);
 
-		ImageClient cone = new ImageClient(4);
+		ImageClient cone = new ImageClient(1);
 		
 		String clientInput = "";
 
@@ -76,7 +76,7 @@ public static void main(String[] args){
 		
 		// we are running asynchronously
 	//	System.out.println("\nExiting in few seconds");
-		Thread.sleep(150000);
+		Thread.sleep(1500000);
 	System.exit(0);
 
 	} catch (Exception e) {
