@@ -46,7 +46,7 @@ public class ConnectionManager {
 	private static HashMap<Integer, Channel> mgmtConnections = new HashMap<Integer, Channel>();
 
 	public static void addConnection(Integer nodeId, Channel channel, boolean isMgmt) {
-		logger.info("ConnectionManager adding connection to " + nodeId);
+		//logger.info("ConnectionManager adding connection to " + nodeId);
 
 		if (isMgmt)
 			mgmtConnections.put(nodeId, channel);
