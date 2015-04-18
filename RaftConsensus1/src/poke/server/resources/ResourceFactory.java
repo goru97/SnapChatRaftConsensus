@@ -51,12 +51,15 @@ public class ResourceFactory {
 	private static ClusterConf clusterCfg;
 	//private static ClusterConfiguration clusterCfg;
 	private static AtomicReference<ResourceFactory> factory = new AtomicReference<ResourceFactory>();
-
+	private static AtomicReference<ImageResource> imgResource = new AtomicReference<ImageResource>();
+	
 	public static void initialize(ServerConf cfg, ClusterConf clusterCfg) {
 		try {
 			ResourceFactory.cfg = cfg;
 			ResourceFactory.clusterCfg = clusterCfg;
 			factory.compareAndSet(null, new ResourceFactory());
+			imgResource.compareAndSet(null, new ImageResource());
+			
 		} catch (Exception e) {
 			logger.error("failed to initialize ResourceFactory", e);
 		}
@@ -110,6 +113,10 @@ public ClusterConf getClusterConf(){
 	
 	
 	public ImgResource getImageResourceInstance(){
-		return new ImageResource();
+		ImgResource ir = imgResource.get();
+		if (ir == null)
+			throw new RuntimeException("Server not intialized");
+
+		return ir;
 	}
 }

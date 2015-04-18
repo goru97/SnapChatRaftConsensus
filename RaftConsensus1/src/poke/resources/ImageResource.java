@@ -47,6 +47,7 @@ public class ImageResource implements ImgResource{
 	}
 
 	public void sendImgToClient(Request request, Channel channel){		
+		System.out.println("Channel --> "+channel);
 		channel.writeAndFlush(request);
 	}
 
@@ -81,11 +82,14 @@ public class ImageResource implements ImgResource{
 						ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getPQChannel().getChannel(), false);
 
 					else{ //Actual clients are sending join requests
+						System.out.println("***Adding Client "+request.getJoinMessage().getFromNodeId()+" to the System****");
 						int clientId = request.getJoinMessage().getFromNodeId();
 						if(!clientInfo.containsKey(clientId))
 							clientInfo.put(clientId, new ClientData(getPQChannel()));
 						else
 							clientInfo.get(clientId).setPQChannel(getPQChannel());
+						
+						System.out.println("Client Info Size "+clientInfo.size());
 					}
 
 				}
@@ -136,10 +140,12 @@ public class ImageResource implements ImgResource{
 					ClientMessage msg = request.getBody().getClientMessage();
 					System.out.println("***Image received from client*** "+msg.getReceiverUserName());
 					int receiverId = msg.getReceiverUserName();
-
+					System.out.println("Client Info Size client data "+clientInfo.size());
 					Iterator<Entry<Integer,ClientData>> i = clientInfo.entrySet().iterator();
 					boolean foundTheClient = false;
+				
 					while(i.hasNext()){
+						
 						Map.Entry<Integer, ClientData> entry = i.next();
 						if(entry.getKey() == receiverId){
 							Channel channel = entry.getValue().getPQChannel().getChannel();
