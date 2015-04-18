@@ -71,7 +71,7 @@ public class ClientCommand {
 	private Request tempReq;
 	
 	
-	public void	sendImage1(String reqId, String caption, ByteString images , int clientID) {
+	public void	sendImage(String reqId, String caption, ByteString images , int clientID) {
 	Request.Builder r = Request.newBuilder();
 	Header.Builder h = Header.newBuilder();
 	h.setOriginator(clientID);

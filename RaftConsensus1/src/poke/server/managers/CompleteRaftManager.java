@@ -48,6 +48,7 @@ import poke.server.conf.ServerConf;
 import poke.server.conf.ClusterConf.Cluster;
 import poke.server.conf.ClusterConf.ClusterNode;
 import poke.server.resources.ResourceFactory;
+import poke.util.RaftMessageBuilder;
 
 public class CompleteRaftManager {
 	protected static Logger logger = LoggerFactory.getLogger("election");
@@ -112,19 +113,9 @@ public class CompleteRaftManager {
 		if(this.currentTerm < term){
 			this.currentTerm = term;
 
-			Management.Builder mgmtBuilder = Management.newBuilder();
-			MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
-			mgmtHeaderBuilder.setOriginator(conf.getNodeId()); //setting self as voter
-			CompleteRaftMessage.Builder raftMsgBuilder= CompleteRaftMessage.newBuilder();
-			raftMsgBuilder.setTerm(currentTerm)
-			.setAction(ElectionAction.VOTE); //setting action so that candidate can use it appropriately.
-			Management finalMsg = mgmtBuilder.setHeader(mgmtHeaderBuilder.build()).setRaftMessage(raftMsgBuilder.build()).build();
 			Channel candidateChannel = ConnectionManager.getConnection(destinationId, true);	
-			System.out.println("Sending to NodeId --> "+destinationId);
-
-			candidateChannel.writeAndFlush(finalMsg);
-
-			System.out.println("Node "+conf.getNodeId()+" voted node "+destinationId);
+			System.out.println("Sending Vote Notice to NodeId --> "+destinationId);
+			candidateChannel.writeAndFlush(RaftMessageBuilder.buildVoteMessage(conf.getNodeId(), currentTerm));
 			electionTimeout.cancel();
 			electionTimeout = new Timer();
 			electionTimeout.schedule (new TimerTask() {
@@ -152,24 +143,7 @@ public class CompleteRaftManager {
 
 	//Prepare Raft Message for Voting
 	private void sendRequestVote() {
-
-		RequestVoteMessage.Builder reqVoteBuilder = RequestVoteMessage.newBuilder();
-		reqVoteBuilder.setCandidateId(conf.getNodeId());
-
-		CompleteRaftMessage.Builder raftMsgbuilder = CompleteRaftMessage.newBuilder();
-		raftMsgbuilder.setAction(ElectionAction.REQUESTVOTE).setTerm(currentTerm).setRequestVote(reqVoteBuilder.build());
-
-		Management.Builder mgmtBuilder = Management.newBuilder();
-
-		MgmtHeader header = mgmtBuilder.getHeader();
-		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
-		mgmtHeaderBuilder.setOriginator(conf.getNodeId());
-
-		mgmtBuilder.setHeader(mgmtHeaderBuilder.build());
-		mgmtBuilder.setRaftMessage(raftMsgbuilder.build());
-		ConnectionManager.broadcastAndFlush(mgmtBuilder.build());
-
-
+		ConnectionManager.broadcastAndFlush(RaftMessageBuilder.buildRequestVote(conf.getNodeId(), currentTerm));
 		System.out.println("Node "+conf.getNodeId()+" became candidate and sending requests!");
 	}
 
@@ -260,7 +234,6 @@ public class CompleteRaftManager {
 
 			}*/
 
-			System.out.println("Receiving Append Messages from ***Leader ID --> "+leaderId+"***");
 			if(leaderId!=conf.getNodeId()){
 				state=State.FOLLOWER;
 				leaderId=mgmt.getHeader().getOriginator();
@@ -280,6 +253,7 @@ public class CompleteRaftManager {
 					}
 				}, getRandomElectionTimeOut());
 			}
+			System.out.println("Receiving Append Messages from ***Leader ID --> "+leaderId+"***");
 			break;
 
 		case ElectionAction.REQUESTVOTE_VALUE:
@@ -467,21 +441,7 @@ private static class RaftHeartMonitor extends Thread{
 	}
 	
 	private void sendAppendNotice(){
-
-		Management.Builder mgmtBuilder = Management.newBuilder();
-
-		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
-		mgmtHeaderBuilder.setOriginator(conf.getNodeId());
-
-		CompleteRaftMessage.Builder raftMsgBuilder = CompleteRaftMessage.newBuilder();
-		//	raftMsgBuilder.setAction(ElectionAction.LEADER);
-
-		raftMsgBuilder.setTerm(CompleteRaftManager.getInstance().getCurrentTerm()).setAction(ElectionAction.APPEND);
-
-		Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
-				.setRaftMessage(raftMsgBuilder.build()).build();
-
-		ConnectionManager.broadcastAndFlush(mgmt);
+		ConnectionManager.broadcastAndFlush(RaftMessageBuilder.buildAppendMessage(conf.getNodeId()));
 	}
 
 }

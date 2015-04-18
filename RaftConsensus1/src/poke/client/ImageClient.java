@@ -35,7 +35,7 @@ public class ImageClient {
 			
 			String uniqueRequestID = UUID.randomUUID().toString().replaceAll("-", "");			
 			ByteString bs = ByteString.copyFrom(myByeImage);
-			cc.sendImage1(uniqueRequestID, "Test Image", bs , clientID);
+			cc.sendImage(uniqueRequestID, "Test Image", bs , clientID);
 			
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -57,17 +57,17 @@ public static void main(String[] args){
 
 		//do {
 
-			System.out.println("Do you want to send images (Y/N)?");
-			clientInput = sc.nextLine();
+			//System.out.println("Do you want to send images (Y/N)?");
+			//clientInput = sc.nextLine();
 
-			if (clientInput != null && "Y".equalsIgnoreCase(clientInput)) {
+		//	if (clientInput != null && "Y".equalsIgnoreCase(clientInput)) {
 
 				//for(int i=0;i<20;i++){
 				System.out.println("Sending Image... ");
 				
 				cone.run(cc);
 				//}
-			}
+		//	}
 
 	//	}
 
@@ -76,8 +76,8 @@ public static void main(String[] args){
 		
 		// we are running asynchronously
 	//	System.out.println("\nExiting in few seconds");
-	//	Thread.sleep(150000000);
-	//	System.exit(0);
+		Thread.sleep(150000);
+	System.exit(0);
 
 	} catch (Exception e) {
 		e.printStackTrace();
