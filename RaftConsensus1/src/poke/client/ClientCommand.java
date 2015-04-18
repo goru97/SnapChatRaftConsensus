@@ -101,7 +101,7 @@ public class ClientCommand {
 	c.setIsClient(true);
 	c.setMsgImageName(caption);
 	c.setSenderUserName(clientID);
-	c.setReceiverUserName(24);
+	c.setReceiverUserName(7);
 	p.setClientMessage(c.build());
 	r.setBody(p.build());
 	Request req = r.build();

@@ -68,6 +68,7 @@ public class ImageResource implements ImgResource{
 				boolean isCluster = request.getJoinMessage().hasFromClusterId();
 
 				if(isCluster){
+					System.out.println("***Message Received from cluster***"+ request.getJoinMessage().getFromClusterId());
 					int clusterId = request.getJoinMessage().getFromClusterId();
 					if(!clusterInfo.containsKey(clusterId))
 						clusterInfo.put(clusterId, new ClientData(getPQChannel()));
