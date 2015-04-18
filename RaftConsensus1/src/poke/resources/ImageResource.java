@@ -65,6 +65,7 @@ channel.writeAndFlush(req);
 				
 				System.out.println("*****Join message received by Leader*****");
 			boolean isClient= request.getBody().getClientMessage().getIsClient();
+			
 			if(isClient){  //client is requesting connection with our system
 				int clientId = request.getBody().getClientMessage().getSenderUserName();
 				if(!clientInfo.containsKey(clientId))
@@ -79,14 +80,16 @@ channel.writeAndFlush(req);
 					clientInfo.put(clusterId, new ClientData(getPQChannel()));
 				else
 					clientInfo.get(clusterId).setPQChannel(getPQChannel());
-             if(!request.getBody().hasClusterMessage()) //Join request coming from adjacent nodes
+             
+			}
+			
+			
+			}
+			else if("Adjacent".equalsIgnoreCase(request.getHeader().getTag())) //Join request coming from adjacent nodes
             	//setup the adjacent node connections
      			ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getPQChannel().getChannel(), false);
-			}
-			
-			
-			}
-			else{
+			else{ //coming from cluster to follower
+		
 				System.out.println("*****Join message received by follower, redirecting to Leader*****");
 				int currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
 				Channel appChannel = ConnectionManager.getConnection(currentLeaderId, false);

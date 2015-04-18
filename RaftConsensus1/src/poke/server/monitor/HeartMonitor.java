@@ -30,6 +30,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import poke.comm.App.Header;
 import poke.comm.App.JoinMessage;
 import poke.comm.App.Request;
 import poke.core.Mgmt.Management;
@@ -299,10 +300,12 @@ public class HeartMonitor {
 
 		logger.info("HeartMonitor sending join message to " + toNodeId);
 		Request.Builder reqBuilder = Request.newBuilder();
+		Header.Builder h = Header.newBuilder();
+		h.setTag("Adjacent");
 		JoinMessage.Builder joinBuilder = JoinMessage.newBuilder();
 		joinBuilder.setFromNodeId(iamNode);
 		joinBuilder.setToNodeId(toNodeId);
-		ch.writeAndFlush(reqBuilder.setJoinMessage(joinBuilder.build()).build()).syncUninterruptibly();
+		ch.writeAndFlush(reqBuilder.setJoinMessage(joinBuilder.build()).setHeader(h.build()).build()).syncUninterruptibly();
 		
 		return true;
 	}
