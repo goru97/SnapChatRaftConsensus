@@ -15,26 +15,38 @@
  */
 package poke.server;
 
+import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.group.ChannelGroup;
 import io.netty.channel.group.ChannelGroupFuture;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import poke.resources.ImageResource;
+import poke.comm.App.JoinMessage;
+import poke.comm.App.Request;
+import poke.server.conf.ClusterConf;
+import poke.server.conf.ClusterConf.Cluster;
+import poke.server.conf.ClusterConf.ClusterNode;
 import poke.server.conf.JsonUtil;
 import poke.server.conf.NodeDesc;
 import poke.server.conf.ServerConf;
@@ -67,7 +79,7 @@ public class Server {
 	protected static ChannelGroup allChannels;
 	protected static HashMap<Integer, ServerBootstrap> bootstrap = new HashMap<Integer, ServerBootstrap>();
 	protected ServerConf conf;
-
+	protected ClusterConf clusterConf;
 	protected JobManager jobMgr;
 	protected NetworkManager networkMgr;
 	protected HeartbeatManager heartbeatMgr;
@@ -96,11 +108,11 @@ public class Server {
 	 * 
 	 * @param cfg
 	 */
-	public Server(File cfg) {
-		init(cfg);
+	public Server(File cfg, File clusterCfg) {
+		init(cfg, clusterCfg);
 	}
 
-	private void init(File cfg) {
+	private void init(File cfg, File clusterCfg) {
 		if (!cfg.exists())
 			throw new RuntimeException(cfg.getAbsolutePath() + " not found");
 		// resource initialization - how message are processed
@@ -113,7 +125,22 @@ public class Server {
 			if (!verifyConf(conf))
 				throw new RuntimeException(
 						"verification of configuration failed");
-			ResourceFactory.initialize(conf);
+			
+
+			if(clusterCfg != null){
+				
+				byte[] clusterContent = new byte[(int)clusterCfg.length()];
+				BufferedInputStream br2 = new BufferedInputStream(new FileInputStream(clusterCfg));
+				br2.read(clusterContent);
+				clusterConf = JsonUtil.decode(new String(clusterContent), ClusterConf.class);
+				
+				if (!verifyClusterConf(clusterConf))
+					throw new RuntimeException(
+							"verification of Cluster configuration failed");
+				
+			}
+			ResourceFactory.initialize(conf,clusterConf);
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		} finally {
@@ -142,7 +169,30 @@ public class Server {
 
 		return rtn;
 	}
+	
+	private boolean verifyClusterConf(ClusterConf clusterConf) {
+		boolean rtn = true;
+		if (clusterConf == null) {
+			logger.error("Null configuration");
+			return false;
+		} else if (clusterConf.getClusters().size() < 0) {
+			logger.error("There should be at least one Cluster");
+			rtn = false;
+		} else {
+			
+			for(Cluster cluster:clusterConf.getClusters()){
+				for(ClusterNode node:cluster.getNodes()){
+			if (node.getPort() < 1024) {
+			logger.error("Invalid port number");
+			rtn = false;
+			}
+			}
+		}
+		}
 
+		return rtn;
+	}
+	
 	public void release() {
 		if (HeartbeatManager.getInstance() != null)
 			HeartbeatManager.getInstance().release();
@@ -205,8 +255,8 @@ public class Server {
 			// and writes)
 		}
 	}
-	
-	
+
+
 	private static class StartJoinCommunication implements Runnable {
 		ServerConf conf;
 
@@ -233,7 +283,7 @@ public class Server {
 
 				boolean compressComm = false;
 				b.childHandler(new ServerInitializer(compressComm));
-				
+
 
 				// Start the server.
 				logger.info("Starting server " + conf.getNodeId()
@@ -259,6 +309,14 @@ public class Server {
 			// and writes)
 		}
 	}
+	/**
+	 * To start communication with other clusters
+	 * @author GauravBajaj
+	 *
+	 */
+
+
+	
 
 	/**
 	 * initialize the private network/interface
@@ -345,9 +403,9 @@ public class Server {
 		jobMgr = JobManager.initManager(conf);
 
 		System.out
-				.println("---> Server.startManagers() expecting "
-						+ conf.getAdjacent().getAdjacentNodes().size()
-						+ " connections");
+		.println("---> Server.startManagers() expecting "
+				+ conf.getAdjacent().getAdjacentNodes().size()
+				+ " connections");
 		// establish nearest nodes and start sending heartbeats
 		heartbeatMgr = HeartbeatManager.initManager(conf);
 		for (NodeDesc nn : conf.getAdjacent().getAdjacentNodes().values()) {
@@ -401,19 +459,26 @@ public class Server {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		if (args.length != 1) {
+		/*if (args.length != 1) {
 			System.err.println("Usage: java "
 					+ Server.class.getClass().getName() + " conf-file");
 			System.exit(1);
 		}
-
+*/
 		File cfg = new File(args[0]);
 		if (!cfg.exists()) {
 			Server.logger.error("configuration file does not exist: " + cfg);
 			System.exit(2);
 		}
-
-		Server svr = new Server(cfg);
+		File clusterCfg = null;
+		if(args.length == 2){
+		 clusterCfg = new File(args[1]);
+		if (!clusterCfg.exists()) 
+			Server.logger.error("Cluster configuration file does not exist: " + clusterCfg + " Starting as individual node");
+		else
+			Server.logger.error("Cluster configuration file found: " + clusterCfg + " Starting as part of the cluster");	
+		}
+		Server svr = new Server(cfg,clusterCfg);
 		svr.run();
 	}
 }

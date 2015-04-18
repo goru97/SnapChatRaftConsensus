@@ -8,11 +8,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+import java.util.Map.Entry;
 
 import javax.imageio.ImageIO;
 
+import poke.comm.App.ClientMessage;
+import poke.comm.App.ClusterMessage;
 import poke.comm.App.Request;
 import poke.resources.vo.ClientData;
 import poke.server.conf.ServerConf;
@@ -35,81 +38,151 @@ public class ImageResource implements ImgResource{
 	}
 
 	@Override
-	public void setChannel(PerChannelQueue pqChannel){
+	public void setPQChannel(PerChannelQueue pqChannel){
 		this.pqChannel = pqChannel;
 	}
 
-	public PerChannelQueue getChannel(){
+	public PerChannelQueue getPQChannel(){
 		return this.pqChannel;
 	}
+
+	public void sendImgToClient(Request request, Channel channel){		
+		channel.writeAndFlush(request);
+	}
+
+	public void sendImageToCluster(Request req, Channel channel){
+channel.writeAndFlush(req);
+	}
+
+
 	@Override
 	public Request process(Request request){
-		
-		if(request.hasJoinMessage()){
-			//System.out.println("***Adding Adjacent Node***" + request.getJoinMessage().getFromNodeId() + "Node channel--- "+getChannel().getChannel());
-		ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getChannel().getChannel(), false);	
-		}
-		
-		else{
-		boolean isLeader = false;
-		int currentLeaderId = -1;
-		boolean isClient= request.getBody().getClientMessage().getIsClient();
-		
-	/*	
-		if(isClient){
-			int clientId = request.getHeader().getClientId();
-			if(!clientInfo.containsKey(clientId))
-				clientInfo.put(clientId, new ClientData(getChannel()));
-			else
-				clientInfo.get(clientInfo).setChannel(getChannel());
-			
-			ConnectionManager.addConnection(clientId, getChannel().getChannel(), false);
-			
-		}
-		
-*/
-		String currentState = CompleteRaftManager.getInstance().getCurrentState();
-		System.out.println("Current State --> "+currentState);
-		
-		if(currentState.equalsIgnoreCase("Leader")){
-			isLeader = true;
-			Request req = RaftMessageBuilder.buildIntraClusterImageMessage(request,conf.getNodeId());
-			ConnectionManager.broadcastAndFlush(req);
-			//save image to file system	
-/*
-			Set<Integer> nodes =clientInfo.keySet();
-			for(Integer i:nodes){
-				ClientData clientData = clientInfo.get(i);
-				PerChannelQueue channel = clientData.getChannel();
-				channel.enqueueRequest(request, null);
-			}
-*/
-			byte[] byteImage = request.getBody().getClientMessage().getMsgImageBits().toByteArray();
-			String key = request.getBody().getClientMessage().getMsgId();
-			InputStream in = new ByteArrayInputStream(byteImage);
-			BufferedImage bImageFromConvert;
 
-			System.out.println("****Image recieved by leader****");
-			try {
-				File file = new File(imagePath, key + ".png");
-				if (!file.exists()) {
-					file.createNewFile();
+		if(request.hasJoinMessage()){ //Either a client or a cluster is requesting connection with our system
+			
+			boolean isClient= request.getBody().getClientMessage().getIsClient();
+			if(isClient){  //client is requesting connection with our system
+				int clientId = request.getBody().getClientMessage().getSenderUserName();
+				if(!clientInfo.containsKey(clientId))
+					clientInfo.put(clientId, new ClientData(getPQChannel()));
+				else
+					clientInfo.get(clientId).setPQChannel(getPQChannel());
+
+			}
+			else{ //Another cluster/System is requesting connection with our system
+				int clusterId = request.getBody().getClusterMessage().getClusterId();
+				if(!clusterInfo.containsKey(clusterId))
+					clientInfo.put(clusterId, new ClientData(getPQChannel()));
+				else
+					clientInfo.get(clusterId).setPQChannel(getPQChannel());
+             if(!request.getBody().hasClusterMessage()) //Join request coming from adjacent nodes
+            	//setup the adjacent node connections
+     			ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getPQChannel().getChannel(), false);
+			}
+		}
+
+		else{  //There's an incoming image from client or cluster
+			boolean isLeader = false;
+			int currentLeaderId = -1;
+
+			String currentState = CompleteRaftManager.getInstance().getCurrentState();
+			System.out.println("Current State --> "+currentState);
+
+			if(currentState.equalsIgnoreCase("Leader")){
+				isLeader = true;
+
+				if(request.getBody().hasClusterMessage()){  // if image received from any cluster
+
+					ClusterMessage msg = request.getBody().getClusterMessage();
+					System.out.println("***Image received from cluster*** "+msg.getClusterId());
+					int receiverId = msg.getClientMessage().getReceiverUserName();
+
+					Iterator<Entry<Integer,ClientData>> i = clientInfo.entrySet().iterator();
+					boolean foundTheClient = false;
+					while(i.hasNext()){
+						Map.Entry<Integer, ClientData> entry = i.next();
+						if(entry.getKey() == receiverId){
+							Channel channel = entry.getValue().getPQChannel().getChannel();
+							sendImgToClient(request,channel);
+							foundTheClient = true;
+							break;
+						}
+					}
+					if(!foundTheClient){
+						Iterator<Entry<Integer,ClientData>> itr = clusterInfo.entrySet().iterator();
+						while(i.hasNext()){
+							Map.Entry<Integer, ClientData> entry = i.next();
+								Channel channel = entry.getValue().getPQChannel().getChannel();
+								sendImageToCluster(request,channel);
+								foundTheClient = true;
+								break;
+						
+					}
+					
 				}
-				bImageFromConvert = ImageIO.read(in);
-				ImageIO.write(bImageFromConvert, "png", file);
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				}
+				
+				else if(request.getBody().hasClientMessage()){ // if image received from any client
+					
+					ClientMessage msg = request.getBody().getClientMessage();
+					System.out.println("***Image received from client*** "+msg.getReceiverUserName());
+					int receiverId = msg.getReceiverUserName();
+
+					Iterator<Entry<Integer,ClientData>> i = clientInfo.entrySet().iterator();
+					boolean foundTheClient = false;
+					while(i.hasNext()){
+						Map.Entry<Integer, ClientData> entry = i.next();
+						if(entry.getKey() == receiverId){
+							Channel channel = entry.getValue().getPQChannel().getChannel();
+							sendImgToClient(request,channel);
+							foundTheClient = true;
+							break;
+						}
+					}
+					if(!foundTheClient){
+						Iterator<Entry<Integer,ClientData>> itr = clusterInfo.entrySet().iterator();
+						while(i.hasNext()){
+							Map.Entry<Integer, ClientData> entry = i.next();
+								Channel channel = entry.getValue().getPQChannel().getChannel();
+								sendImageToCluster(request,channel);
+								foundTheClient = true;
+								break;
+						
+					}
+					
+				}
+				}
+				
+
+				Request req = RaftMessageBuilder.buildIntraClusterImageMessage(request,conf.getNodeId()); //Replicate across our own cluster for fault tolerance
+				ConnectionManager.broadcastAndFlush(req);
+
+
+				byte[] byteImage = request.getBody().getClientMessage().getMsgImageBits().toByteArray();
+				String key = request.getBody().getClientMessage().getMsgId();
+				InputStream in = new ByteArrayInputStream(byteImage);
+				BufferedImage bImageFromConvert;
+
+				System.out.println("****Image recieved by leader****");
+				try {
+					File file = new File(imagePath, key + ".png");
+					if (!file.exists()) {
+						file.createNewFile();
+					}
+					bImageFromConvert = ImageIO.read(in);
+					ImageIO.write(bImageFromConvert, "png", file);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
+
 			}
 
-
-
-		}
-
-		else
-			  // if a message sent by leader then simply save the image
+			else
+				// if a message sent by leader then simply save the image
 				if(request.getHeader().getOriginator() == CompleteRaftManager.getInstance().getLeaderId()){
-				
+
 					isLeader = false;
 					//save image to file system	
 
@@ -118,7 +191,7 @@ public class ImageResource implements ImgResource{
 					InputStream in = new ByteArrayInputStream(byteImage);
 					BufferedImage bImageFromConvert;
 
-					System.out.println("****Image recieved by follower sent by leader****");
+					System.out.println("****Image recieved by follower sent by leader; Saving in FileSystem****");
 					try {
 						File file = new File(imagePath, key + ".png");
 						if (!file.exists()) {
@@ -133,26 +206,26 @@ public class ImageResource implements ImgResource{
 
 
 				}
-				
 
-			else{ //if sent by a client, send message to current leader
 
-				System.out.println("****Image recieved by follower sent by client****");
-				currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
-				Channel appChannel = ConnectionManager.getConnection(currentLeaderId, false);
-				//Channel mgmtChannel = ConnectionManager.getConnection(currentLeaderId, true);
-				appChannel.writeAndFlush(request);
-				//System.out.println("appChannel -- "+appChannel+" mgmtChannel -- "+mgmtChannel);
-				//channel.writeAndFlush(request);
+				else{ //if sent by a client, send message to current leader
 
-			}
+					System.out.println("****Image recieved by follower sent by Client/Cluster; Redirecting to leader****");
+					currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
+					Channel appChannel = ConnectionManager.getConnection(currentLeaderId, false);
+					//Channel mgmtChannel = ConnectionManager.getConnection(currentLeaderId, true);
+					appChannel.writeAndFlush(request);
+					//System.out.println("appChannel -- "+appChannel+" mgmtChannel -- "+mgmtChannel);
+					//channel.writeAndFlush(request);
+
+				}
 
 		}
-
+		
 		return request;
 	}
 
-   @Override
+	@Override
 	public void setConf(ServerConf conf) {
 		this.conf = conf;
 		this.nodeId =conf.getNodeId();

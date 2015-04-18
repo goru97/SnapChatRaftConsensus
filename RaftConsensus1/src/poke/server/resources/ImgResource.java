@@ -6,6 +6,6 @@ import poke.server.queue.PerChannelQueue;
 
 public interface ImgResource {
 	Request process(Request request);
-	void setChannel(PerChannelQueue channel);
+	void setPQChannel(PerChannelQueue channel);
 	void setConf(ServerConf conf);
 }

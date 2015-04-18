@@ -23,6 +23,7 @@ import org.slf4j.LoggerFactory;
 
 import poke.comm.App.Header;
 import poke.resources.ImageResource;
+import poke.server.conf.ClusterConf;
 import poke.server.conf.ServerConf;
 import poke.server.conf.ServerConf.ResourceConf;
 
@@ -47,11 +48,14 @@ public class ResourceFactory {
 	protected static Logger logger = LoggerFactory.getLogger("server");
 
 	private static ServerConf cfg;
+	private static ClusterConf clusterCfg;
+	//private static ClusterConfiguration clusterCfg;
 	private static AtomicReference<ResourceFactory> factory = new AtomicReference<ResourceFactory>();
 
-	public static void initialize(ServerConf cfg) {
+	public static void initialize(ServerConf cfg, ClusterConf clusterCfg) {
 		try {
 			ResourceFactory.cfg = cfg;
+			ResourceFactory.clusterCfg = clusterCfg;
 			factory.compareAndSet(null, new ResourceFactory());
 		} catch (Exception e) {
 			logger.error("failed to initialize ResourceFactory", e);
@@ -69,6 +73,11 @@ public class ResourceFactory {
 	private ResourceFactory() {
 	}
 
+public ClusterConf getClusterConf(){
+	return this.clusterCfg;
+}
+	
+	
 	/**
 	 * Obtain a resource
 	 * 

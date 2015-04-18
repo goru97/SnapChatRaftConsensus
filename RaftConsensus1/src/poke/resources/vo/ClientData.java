@@ -10,11 +10,11 @@ public class ClientData {
 		
 	}
 	
-	public PerChannelQueue getChannel() {
+	public PerChannelQueue getPQChannel() {
 		return channel;
 	}
 
-	public void setChannel(PerChannelQueue channel) {
+	public void setPQChannel(PerChannelQueue channel) {
 		this.channel = channel;
 	}
 }

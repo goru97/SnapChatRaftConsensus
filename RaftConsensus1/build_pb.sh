@@ -25,4 +25,3 @@ $PROTOC_HOME/bin/protoc --proto_path=${project_base}/resources --java_out=${proj
 
 $PROTOC_HOME/bin/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/mgmt.proto
 
-$PROTOC_HOME/bin/protoc --proto_path=${project_base}/resources --java_out=${project_base}/generated ${project_base}/resources/image.proto

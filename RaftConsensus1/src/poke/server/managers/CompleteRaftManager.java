@@ -14,8 +14,19 @@
  * under the License.
  */
 package poke.server.managers;
+import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelOption;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
+import io.netty.channel.socket.nio.NioSocketChannel;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -24,12 +35,19 @@ import java.util.concurrent.atomic.AtomicReference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import poke.comm.App.JoinMessage;
+import poke.comm.App.Request;
 import poke.core.Mgmt.CompleteRaftMessage;
 import poke.core.Mgmt.CompleteRaftMessage.ElectionAction;
 import poke.core.Mgmt.Management;
 import poke.core.Mgmt.MgmtHeader;
 import poke.core.Mgmt.RequestVoteMessage;
+import poke.server.ServerInitializer;
+import poke.server.conf.ClusterConf;
 import poke.server.conf.ServerConf;
+import poke.server.conf.ClusterConf.Cluster;
+import poke.server.conf.ClusterConf.ClusterNode;
+import poke.server.resources.ResourceFactory;
 
 public class CompleteRaftManager {
 	protected static Logger logger = LoggerFactory.getLogger("election");
@@ -65,6 +83,10 @@ public class CompleteRaftManager {
 	//for internal replication use
 	public String getCurrentState(){
 		return this.state.toString();
+	}
+	
+	public int getCurrentTerm(){
+		return currentTerm;
 	}
 	
 	public int getLeaderId(){
@@ -177,48 +199,18 @@ public class CompleteRaftManager {
 	}
 
 
-	private void sendAppendNotice(){
-
-		Management.Builder mgmtBuilder = Management.newBuilder();
-
-		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
-		mgmtHeaderBuilder.setOriginator(conf.getNodeId());
-
-		CompleteRaftMessage.Builder raftMsgBuilder = CompleteRaftMessage.newBuilder();
-		//	raftMsgBuilder.setAction(ElectionAction.LEADER);
-
-		raftMsgBuilder.setTerm(currentTerm).setAction(ElectionAction.APPEND);
-
-		Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
-				.setRaftMessage(raftMsgBuilder.build()).build();
-
-		ConnectionManager.broadcastAndFlush(mgmt);
-	}
-
+	
 
 	// Time to celebrate on becoming new Leader
 	private void sendLeaderNotice()  {
-		//sendAppendNotice();
 
-
-		Thread t = new Thread(new Runnable(){
-			@Override
-			public void run(){
-				while (true){
-					System.out.println("Sending Append Notices!!");
-					sendAppendNotice();
-                   try {
-					Thread.sleep(3000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				}
-			}
-		});
-
-		t.start();
-
+// Start sending append notices
+		Thread h = new RaftHeartMonitor();
+		h.start();
+//Start cluster join messages
+		Thread c = new ClusterConnectionManager(conf, ResourceFactory.getInstance().getClusterConf());
+		c.start();
+		
 	}
 
 
@@ -268,7 +260,7 @@ public class CompleteRaftManager {
 
 			}*/
 
-			System.out.println("Leader ID -->"+leaderId);
+			System.out.println("Receiving Append Messages from ***Leader ID --> "+leaderId+"***");
 			if(leaderId!=conf.getNodeId()){
 				state=State.FOLLOWER;
 				leaderId=mgmt.getHeader().getOriginator();
@@ -324,6 +316,174 @@ public class CompleteRaftManager {
 		}
 
 	}
+	private static class ClusterConnectionManager extends Thread {
 
+		private Map<Integer, Channel> connMap = new HashMap<Integer, Channel>();
+		private List<Cluster> clusterList;
+		private ClusterConf clusterConf;
+		private ServerConf conf;
+		public ClusterConnectionManager(ServerConf conf,ClusterConf clusterConf) {
+			this.conf = conf;
+			this.clusterConf = clusterConf;
+			if (clusterConf !=null)
+			clusterList = clusterConf.getClusters();
+		}
+
+		public void registerConnection(int nodeId, Channel channel) {
+			// ConnectionManager.addConnection(nodeId, channel,
+			// ConnectionManager.connectionState.APP);
+			// TODO send join message
+			connMap.put(nodeId, channel);
+		}
+
+		public ChannelFuture connect(String host, int port) {
+
+			ChannelFuture channel = null;
+			EventLoopGroup workerGroup = new NioEventLoopGroup();
+
+			try {
+				//	logger.info("Attempting to  connect to : "+host+" : "+port);
+				Bootstrap b = new Bootstrap();
+				b.group(workerGroup).channel(NioSocketChannel.class)
+				.handler(new ServerInitializer(false));
+
+				b.option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000);
+				b.option(ChannelOption.TCP_NODELAY, true);
+				b.option(ChannelOption.SO_KEEPALIVE, true);
+
+				channel = b.connect(host, port).syncUninterruptibly();
+				//ClusterLostListener cll = new ClusterLostListener(this);
+				//channel.channel().closeFuture().addListener(cll);
+
+			} catch (Exception e) {
+				//e.printStackTrace();
+				//logger.info("Cound not connect!!!!!!!!!!!!!!!!!!!!!!!!!");
+				return null;
+			}
+
+			return channel;
+		}
+
+		public Request createClusterJoinMessage(int fromCluster, int fromNode,
+				int toCluster, int toNode) {
+			//logger.info("Creating join message");
+			Request.Builder req = Request.newBuilder();
+
+			JoinMessage.Builder jm = JoinMessage.newBuilder();
+			jm.setFromClusterId(fromCluster);
+			jm.setFromNodeId(fromNode);
+			jm.setToClusterId(toCluster);
+			jm.setToNodeId(toNode);
+
+			req.setJoinMessage(jm.build());
+			return req.build();
+
+		}
+
+		@Override
+		public void run() {
+			
+			while (true) {
+				//logger.info(""+isLeader);
+				if(CompleteRaftManager.getInstance().getCurrentState().equalsIgnoreCase("Leader")){
+
+					try {
+						
+							for(Cluster cluster:clusterList){
+							List<ClusterNode> nodes = cluster.getNodes();
+							int key = cluster.getId();
+							//logger.info("For cluster "+ key +" nodes "+ nodes.size());
+							for (ClusterNode n : nodes) {
+								String host = n.getIp();
+								int port = n.getPort();
+								ChannelFuture channel = connect(host, port);
+								Request req = createClusterJoinMessage(35325,
+										conf.getNodeId(), key, port);
+								if (channel != null) {
+									channel = channel.channel().writeAndFlush(req);
+									//										logger.info("Message flushed"+channel.isDone()+ " "+
+									//												 channel.channel().isWritable());
+									if (channel.channel().isWritable()) {
+										registerConnection(key,
+												channel.channel());
+										logger.info("Connection to cluster " + key
+												+ " added");
+										break;
+									}
+								}
+							}
+							}
+						
+					} catch (NoSuchElementException e) {
+						//logger.info("Restarting iterations");
+						
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
+					}
+				} else {
+					try {
+						Thread.sleep(3000);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	public static class ClusterLostListener implements ChannelFutureListener {
+		ClusterConnectionManager ccm;
+
+		public ClusterLostListener(ClusterConnectionManager ccm) {
+			this.ccm = ccm;
+		}
+
+		@Override
+		public void operationComplete(ChannelFuture future) throws Exception {
+			logger.info("Cluster " + future.channel()
+					+ " closed. Removing connection");
+			// TODO remove dead connection
+		}
+	}
+
+private static class RaftHeartMonitor extends Thread{
+	@Override
+	public void run(){
+		while (true){
+			System.out.println("Sending append messages to followers!");
+			sendAppendNotice();
+           try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+	}
+	
+	private void sendAppendNotice(){
+
+		Management.Builder mgmtBuilder = Management.newBuilder();
+
+		MgmtHeader.Builder mgmtHeaderBuilder = MgmtHeader.newBuilder();
+		mgmtHeaderBuilder.setOriginator(conf.getNodeId());
+
+		CompleteRaftMessage.Builder raftMsgBuilder = CompleteRaftMessage.newBuilder();
+		//	raftMsgBuilder.setAction(ElectionAction.LEADER);
+
+		raftMsgBuilder.setTerm(CompleteRaftManager.getInstance().getCurrentTerm()).setAction(ElectionAction.APPEND);
+
+		Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
+				.setRaftMessage(raftMsgBuilder.build()).build();
+
+		ConnectionManager.broadcastAndFlush(mgmt);
+	}
+
+}
 
 }
