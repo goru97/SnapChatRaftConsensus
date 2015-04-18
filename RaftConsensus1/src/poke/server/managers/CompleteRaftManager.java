@@ -363,10 +363,13 @@ public class CompleteRaftManager {
 
 					try {
 						
-							for(Cluster cluster:clusterList){
+						
+	Outer:						for(Cluster cluster:clusterList){
 							List<ClusterNode> nodes = cluster.getNodes();
 							int key = cluster.getId();
 							//logger.info("For cluster "+ key +" nodes "+ nodes.size());
+							if (!connMap.containsKey(key)) {
+							
 							for (ClusterNode n : nodes) {
 								String host = n.getIp();
 								int port = n.getPort();
@@ -382,11 +385,14 @@ public class CompleteRaftManager {
 												channel.channel());
 										logger.info("Connection to cluster " + key
 												+ " added");
-										break;
+										
+										break Outer;
 									}
 								}
 							}
 							}
+							}
+						
 						
 					} catch (NoSuchElementException e) {
 						//logger.info("Restarting iterations");
@@ -405,6 +411,12 @@ public class CompleteRaftManager {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
+				}
+				try {
+					Thread.sleep(3000); //Give some time to react
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
 		}

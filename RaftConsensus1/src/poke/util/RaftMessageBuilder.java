@@ -29,6 +29,7 @@ public class RaftMessageBuilder {
 		c.setMsgId(req.getBody().getClientMessage().getMsgId());
 		c.setMsgImageBits(req.getBody().getClientMessage().getMsgImageBits());
 		c.setMsgImageName(req.getBody().getClientMessage().getMsgImageName());
+		c.setReceiverUserName(req.getBody().getClientMessage().getReceiverUserName());
 		c.setIsClient(false);
 		p.setClientMessage(c.build());
 		r.setBody(p.build());

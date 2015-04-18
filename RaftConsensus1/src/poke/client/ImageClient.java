@@ -51,7 +51,7 @@ public static void main(String[] args){
 		CommListener listener = new ClientPrintListener("First Client");
 		cc.addListener(listener);
 
-		ImageClient cone = new ImageClient(1);
+		ImageClient cone = new ImageClient(24);
 		
 		String clientInput = "";
 

@@ -59,7 +59,11 @@ channel.writeAndFlush(req);
 	public Request process(Request request){
 
 		if(request.hasJoinMessage()){ //Either a client or a cluster is requesting connection with our system
+			String currentState = CompleteRaftManager.getInstance().getCurrentState();
 			
+			if(currentState.equalsIgnoreCase("Leader")){ //Joins can only be approved by the leader
+				
+				System.out.println("*****Join message received by Leader*****");
 			boolean isClient= request.getBody().getClientMessage().getIsClient();
 			if(isClient){  //client is requesting connection with our system
 				int clientId = request.getBody().getClientMessage().getSenderUserName();
@@ -79,6 +83,16 @@ channel.writeAndFlush(req);
             	//setup the adjacent node connections
      			ConnectionManager.addConnection(request.getJoinMessage().getFromNodeId(), getPQChannel().getChannel(), false);
 			}
+			
+			
+			}
+			else{
+				System.out.println("*****Join message received by follower, redirecting to Leader*****");
+				int currentLeaderId = CompleteRaftManager.getInstance().getLeaderId();
+				Channel appChannel = ConnectionManager.getConnection(currentLeaderId, false);
+				appChannel.writeAndFlush(request);
+			}
+			
 		}
 
 		else{  //There's an incoming image from client or cluster
@@ -86,8 +100,7 @@ channel.writeAndFlush(req);
 			int currentLeaderId = -1;
 
 			String currentState = CompleteRaftManager.getInstance().getCurrentState();
-			System.out.println("Current State --> "+currentState);
-
+		
 			if(currentState.equalsIgnoreCase("Leader")){
 				isLeader = true;
 
