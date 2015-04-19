@@ -397,7 +397,7 @@ public class Server {
 		// (Node),
 		// Current term of the election
 
-		raftManager = CompleteRaftManager.initManager(conf);
+		raftManager = CompleteRaftManager.initManager(conf, clusterConf);
 
 		// create manager for accepting jobs
 		jobMgr = JobManager.initManager(conf);

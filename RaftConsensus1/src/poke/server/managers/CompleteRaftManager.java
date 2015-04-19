@@ -55,6 +55,7 @@ public class CompleteRaftManager {
 	protected static AtomicReference<CompleteRaftManager> instance = new AtomicReference<CompleteRaftManager>();
 
 	private static ServerConf conf;
+	private static ClusterConf clusterConf;
 	private int currentTerm=0; //leader’s term
 	private int leaderId=-1;
 	private int votedFor=-1;
@@ -62,15 +63,21 @@ public class CompleteRaftManager {
 	private int candidateId;
 	private State state= State.FOLLOWER; //state of the node: Follower, Candidate, Leader
 	private Timer electionTimeout = new Timer();
-
+    private RaftHeartMonitor raftMonitor;
+	//The system must remain in one of these three states
 	public  enum State {
 		FOLLOWER, CANDIDATE, LEADER
 	}
 
+	
 	public static ServerConf getConf(){
 		return conf;
 	}
-	public static CompleteRaftManager initManager(ServerConf conf) {
+	public static ClusterConf getClusterConf(){
+		return clusterConf;
+	}
+	public static CompleteRaftManager initManager(ServerConf conf, ClusterConf clusterConf) {
+		CompleteRaftManager.clusterConf = clusterConf;
 		CompleteRaftManager.conf = conf;
 		instance.compareAndSet(null, new CompleteRaftManager());
 		return instance.get();
@@ -95,6 +102,7 @@ public class CompleteRaftManager {
 	}
 	
 	//Reset it to follower state
+	
 	private void resetNode(){
 
 		System.out.println("Resetting Node");
@@ -102,6 +110,9 @@ public class CompleteRaftManager {
 		this.leaderId=-1;
 		this.votedFor=-1;
 		this.voteCount=0;
+		if(raftMonitor!=null)
+			raftMonitor.setLeader(false);
+		raftMonitor = null;
 	}
 
 	//Vote the candidate
@@ -137,7 +148,6 @@ public class CompleteRaftManager {
 
 	private int getRandomElectionTimeOut(){
 		int randomTimeOut = new Random().nextInt(10000 - 5000 + 1) + 5000;
-	//	System.out.println("New TTL --> "+randomTimeOut);
 		return randomTimeOut;
 	}
 
@@ -148,7 +158,6 @@ public class CompleteRaftManager {
 	}
 
 	private boolean isLeader() {
-		// TODO Auto-generated method stub
 		if((voteCount>((ConnectionManager.getNumMgmtConnections())/2)))
 			return true;
 		else
@@ -179,15 +188,15 @@ public class CompleteRaftManager {
 	private void sendLeaderNotice()  {
 
 // Start sending append notices
-		Thread h = new RaftHeartMonitor();
-		h.start();
+		raftMonitor = new RaftHeartMonitor();
+		raftMonitor.start();
 //Start cluster join messages
 		Thread c = new ClusterConnectionManager(conf, ResourceFactory.getInstance().getClusterConf());
 		c.start();
 		
 	}
 
-
+//Start the raft consensus process
 	public void startMyRaft(){
 		resetNode();
 		electionTimeout.cancel();
@@ -228,18 +237,21 @@ public class CompleteRaftManager {
 		switch (electionActionVal) {
 
 		case ElectionAction.APPEND_VALUE:
-			/*if(this.term < req.getTerm()){
-				this.term = req.getTerm();
+			
+			if(this.currentTerm < req.getTerm()){
+				this.currentTerm = req.getTerm();
 				this.leaderId = mgmt.getHeader().getOriginator();
+				resetNode();
+			}
 
-			}*/
-
+		else{
 			if(leaderId!=conf.getNodeId()){
 				state=State.FOLLOWER;
 				leaderId=mgmt.getHeader().getOriginator();
 				currentTerm=mgmt.getRaftMessage().getTerm();
 				votedFor=-1;
 				//reset timer else call for election
+				if(electionTimeout!=null)
 				electionTimeout.cancel();
 				electionTimeout=new Timer();
 				electionTimeout.schedule (new TimerTask() {
@@ -254,6 +266,7 @@ public class CompleteRaftManager {
 				}, getRandomElectionTimeOut());
 			}
 			System.out.println("Receiving Append Messages from ***Leader ID --> "+leaderId+"***");
+		}
 			break;
 
 		case ElectionAction.REQUESTVOTE_VALUE:
@@ -304,9 +317,7 @@ public class CompleteRaftManager {
 		}
 
 		public void registerConnection(int nodeId, Channel channel) {
-			// ConnectionManager.addConnection(nodeId, channel,
-			// ConnectionManager.connectionState.APP);
-			// TODO send join message
+			
 			connMap.put(nodeId, channel);
 		}
 
@@ -374,7 +385,7 @@ public class CompleteRaftManager {
 								String host = n.getIp();
 								int port = n.getPort();
 								ChannelFuture channel = connect(host, port);
-								Request req = createClusterJoinMessage(4567,
+								Request req = createClusterJoinMessage(clusterConf.getClusterId(),
 										conf.getNodeId(), key, port);
 								if (channel != null) {
 									channel = channel.channel().writeAndFlush(req);
@@ -438,9 +449,17 @@ public class CompleteRaftManager {
 	}
 
 private static class RaftHeartMonitor extends Thread{
+	
+	private boolean isLeader = true;
+
+	public void setLeader(boolean isLeader) {
+		this.isLeader = isLeader;
+	}
+
 	@Override
 	public void run(){
-		while (true){
+		
+		while (isLeader){
 			System.out.println("Sending append messages to followers!");
 			sendAppendNotice();
            try {

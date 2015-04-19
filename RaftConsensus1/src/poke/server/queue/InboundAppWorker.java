@@ -94,6 +94,7 @@ public class InboundAppWorker extends Thread {
 						//System.out.println("Replicating the image across cluster");
 						rsc.setPQChannel(pqChannel);
 						rsc.setConf(CompleteRaftManager.getConf());
+						rsc.setClusterConf(CompleteRaftManager.getClusterConf());
 						rsc.process(req);
 					}
 					

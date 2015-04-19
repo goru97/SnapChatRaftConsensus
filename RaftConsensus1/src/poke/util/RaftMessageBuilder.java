@@ -2,6 +2,7 @@ package poke.util;
 
 import io.netty.channel.Channel;
 import poke.comm.App.ClientMessage;
+import poke.comm.App.ClusterMessage;
 import poke.comm.App.Header;
 import poke.comm.App.Payload;
 import poke.comm.App.Request;
@@ -80,5 +81,19 @@ public class RaftMessageBuilder {
 		Management mgmt = mgmtBuilder.setHeader(mgmtHeaderBuilder.build())
 				.setRaftMessage(raftMsgBuilder.build()).build();
 		return mgmt;
+	}
+	
+	public static Request buildClusterMessage(Request req, int clusterId){
+		Request.Builder r = Request.newBuilder();
+		
+		ClusterMessage.Builder c = ClusterMessage.newBuilder();
+		c.setClientMessage(req.getBody().getClientMessage());
+		c.setClusterId(clusterId);
+		Payload.Builder p = Payload.newBuilder();
+		p.setClusterMessage(c.build());
+		r.setHeader(req.getHeader());
+		r.setBody(p.build());
+		return r.build();
+		
 	}
 }

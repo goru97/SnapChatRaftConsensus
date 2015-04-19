@@ -192,7 +192,7 @@ message Header {
     optional int32 toNode = 8;
 
     // catch all for options
-    repeated NameValueSet options = 9;
+    repeated NameValueSet c = 9;
 
     enum Routing {
         PING = 2;
